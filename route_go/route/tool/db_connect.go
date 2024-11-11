@@ -12,7 +12,7 @@ import (
 var db_set = map[string]string{}
 
 func Temp_DB_connect() *sql.DB {
-    db, err := sql.Open("sqlite", "./data/temp.db")
+    db, err := sql.Open("sqlite", "file:./data/temp.db?_busy_timeout=3600000&_journal_mode=WAL")
     if err != nil {
         log.Fatal(err)
     }
@@ -45,7 +45,7 @@ func DB_init() {
 
 func DB_connect() *sql.DB {
     if db_set["db_type"] == "sqlite" {
-        db, err := sql.Open("sqlite", db_set["db_name"]+".db")
+        db, err := sql.Open("sqlite", "file:" + db_set["db_name"] + ".db?_busy_timeout=3600000&_journal_mode=WAL")
         if err != nil {
             log.Fatal(err)
         }

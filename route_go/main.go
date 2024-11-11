@@ -3,10 +3,8 @@ package main
 import (
     "os"
     "log"
-    "sync"
     "io/ioutil"
     "strings"
-    "runtime"
     "opennamu/route"
     "opennamu/route/tool"
     
@@ -23,21 +21,9 @@ func main() {
     }
 
     tool.DB_init()
-
-    db_type := tool.Get_DB_type()
-    if db_type == "sqlite" {
-        runtime.GOMAXPROCS(1)
-    }
-
-    var mu sync.Mutex
-
+    
     r := gin.Default()
     r.POST("/", func(c *gin.Context) {
-        if db_type == "sqlite" {
-            mu.Lock()
-            defer mu.Unlock()
-        }
-        
         route_data := ""
         body, err := ioutil.ReadAll(c.Request.Body)
         if err != nil {
