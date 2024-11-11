@@ -9,14 +9,11 @@ import (
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_bbs(call_arg []string) string {
+func Api_bbs(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     rows := []*sql.Rows{}
     if other_set["bbs_num"] == "" {
@@ -31,8 +28,8 @@ func Api_bbs(call_arg []string) string {
     } else {
         page, _ := strconv.Atoi(other_set["page"])
         num := 0
-        if page*50 > 0 {
-            num = page*50 - 50
+        if page * 50 > 0 {
+            num = page * 50 - 50
         }
 
         stmt, err := db.Prepare(tool.DB_change("select set_code, set_id, '1' from bbs_data where set_name = 'pinned' and set_id like ? order by set_data desc"))

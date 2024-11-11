@@ -1,14 +1,12 @@
 package route
 
 import (
+    "database/sql"
     "encoding/json"
     "opennamu/route/tool"
 )
 
-func Api_list_auth(call_arg []string) string {
-    db := tool.DB_connect()
-    defer db.Close()
-
+func Api_list_auth(db *sql.DB, call_arg []string) string {
     data := tool.List_auth(db)
 
     return_data := make(map[string]interface{})

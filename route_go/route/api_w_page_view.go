@@ -9,14 +9,11 @@ import (
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_w_page_view(call_arg []string) string {
+func Api_w_page_view(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     pv_continue := tool.Get_setting(db, "not_use_view_count", "")
     if len(pv_continue) == 0 || pv_continue[0][0] == "" {

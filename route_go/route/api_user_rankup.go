@@ -1,6 +1,7 @@
 package route
 
 import (
+    "database/sql"
     "opennamu/route/tool"
     "strconv"
     "strings"
@@ -21,14 +22,11 @@ func User_rankup_condition(data string) string {
     }
 }
 
-func Api_user_rankup(call_arg []string) string {
+func Api_user_rankup(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     ip := other_set["ip"]
     if !tool.IP_or_user(ip) {

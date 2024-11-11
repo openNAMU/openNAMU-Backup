@@ -9,14 +9,11 @@ import (
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_topic(call_arg []string) string {
+func Api_topic(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     if other_set["tool"] == "length" {
         stmt, err := db.Prepare(tool.DB_change("select id from topic where code = ? order by id + 0 desc limit 1"))

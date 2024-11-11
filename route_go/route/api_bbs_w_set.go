@@ -1,6 +1,7 @@
 package route
 
 import (
+    "database/sql"
     "log"
     "opennamu/route/tool"
 
@@ -21,14 +22,11 @@ func BBS_w_set_list() map[string]string {
     return setting_acl
 }
 
-func Api_bbs_w_set(call_arg []string) string {
+func Api_bbs_w_set(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     setting_acl := BBS_w_set_list()
 

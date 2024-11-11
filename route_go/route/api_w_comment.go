@@ -1,12 +1,13 @@
 package route
 
 import (
+    "database/sql"
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_bbs_w_comment_make(doc_name string) string {
+func Api_bbs_w_comment_make(db *sql.DB, doc_name string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     inter_other_set := map[string]string{}
@@ -16,7 +17,7 @@ func Api_bbs_w_comment_make(doc_name string) string {
     inter_other_set["data"] = ""
 
     json_data, _ := json.Marshal(inter_other_set)
-    return_data := Api_bbs_w_comment_one([]string{string(json_data)})
+    return_data := Api_bbs_w_comment_one(db, []string{string(json_data)})
 
     return_data_api := map[string]string{}
     json.Unmarshal([]byte(return_data), &return_data_api)
@@ -24,14 +25,11 @@ func Api_bbs_w_comment_make(doc_name string) string {
     return return_data_api["data"]
 }
 
-func Api_w_comment(call_arg []string) string {
+func Api_w_comment(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     db_code := tool.Get_document_setting(db, other_set["doc_name"], "document_comment_code", "")
     db_code_str := ""
@@ -40,7 +38,7 @@ func Api_w_comment(call_arg []string) string {
     }
 
     if db_code_str == "" {
-        db_code_str = Api_bbs_w_comment_make(other_set["doc_name"])
+        db_code_str = Api_bbs_w_comment_make(db, other_set["doc_name"])
     }
 
     return_data := make(map[string]interface{})

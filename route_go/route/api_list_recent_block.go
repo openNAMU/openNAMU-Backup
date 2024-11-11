@@ -9,14 +9,11 @@ import (
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_list_recent_block(call_arg []string) string {
+func Api_list_recent_block(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     page_int, err := strconv.Atoi(other_set["num"])
     if err != nil {

@@ -1,19 +1,16 @@
 package route
 
 import (
-    "opennamu/route/tool"
+    "database/sql"
 
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_edit_move_all(call_arg []string) string {
+func Api_edit_move_all(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     if other_set["select"] == "include" {
 

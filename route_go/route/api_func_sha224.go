@@ -1,12 +1,13 @@
 package route
 
 import (
+    "database/sql"
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_func_sha224(call_arg []string) string {
+func Api_func_sha224(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}

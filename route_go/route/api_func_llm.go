@@ -11,14 +11,11 @@ import (
     "google.golang.org/api/option"
 )
 
-func Api_func_llm(call_arg []string) string {
+func Api_func_llm(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     var api_key string
 

@@ -1,20 +1,18 @@
 package route
 
 import (
+    "database/sql"
     "log"
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_bbs_w_set_put(call_arg []string) string {
+func Api_bbs_w_set_put(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     auth_info := tool.Check_acl(db, "", "", "owner_auth", other_set["ip"])
 

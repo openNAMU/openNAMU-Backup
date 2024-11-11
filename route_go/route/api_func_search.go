@@ -10,7 +10,7 @@ import (
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_func_search(call_arg []string) string {
+func Api_func_search(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
@@ -18,12 +18,9 @@ func Api_func_search(call_arg []string) string {
 
     page, _ := strconv.Atoi(other_set["num"])
     num := 0
-    if page*50 > 0 {
-        num = page*50 - 50
+    if page * 50 > 0 {
+        num = page * 50 - 50
     }
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     var stmt *sql.Stmt
     var err error

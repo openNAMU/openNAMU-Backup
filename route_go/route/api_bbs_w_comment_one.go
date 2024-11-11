@@ -9,14 +9,11 @@ import (
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_bbs_w_comment_one(call_arg []string) string {
+func Api_bbs_w_comment_one(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     sub_code := other_set["sub_code"]
     sub_code_parts := strings.Split(sub_code, "-")

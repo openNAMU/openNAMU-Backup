@@ -1,5 +1,9 @@
 package route
 
-func Api_user_online(call_arg []string) string {
+import (
+    "database/sql"
+)
+
+func Api_user_online(db *sql.DB, call_arg []string) string {
     return ""
 }

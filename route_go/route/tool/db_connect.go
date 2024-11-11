@@ -12,7 +12,7 @@ import (
 var db_set = map[string]string{}
 
 func Temp_DB_connect() *sql.DB {
-    db, err := sql.Open("sqlite", "file:./data/temp.db?_busy_timeout=3600000&_journal_mode=WAL")
+    db, err := sql.Open("sqlite", "./data/temp.db")
     if err != nil {
         log.Fatal(err)
     }
@@ -44,21 +44,29 @@ func DB_init() {
 }
 
 func DB_connect() *sql.DB {
+    log.Default().Println("DB open")
+
     if db_set["db_type"] == "sqlite" {
-        db, err := sql.Open("sqlite", "file:" + db_set["db_name"] + ".db?_busy_timeout=3600000&_journal_mode=WAL")
+        db, err := sql.Open("sqlite", db_set["db_name"] + ".db")
         if err != nil {
             log.Fatal(err)
         }
 
         return db
     } else {
-        db, err := sql.Open("mysql", db_set["db_mysql_user"]+":"+db_set["db_mysql_pw"]+"@tcp("+db_set["db_mysql_host"]+":"+db_set["db_mysql_port"]+")/"+db_set["db_name"])
+        db, err := sql.Open("mysql", db_set["db_mysql_user"] + ":" + db_set["db_mysql_pw"] + "@tcp(" + db_set["db_mysql_host"] + ":" + db_set["db_mysql_port"] + ")/" + db_set["db_name"])
         if err != nil {
             log.Fatal(err)
         }
 
         return db
     }
+}
+
+func DB_close(db *sql.DB) {
+    db.Close()
+    
+    log.Default().Println("DB close")
 }
 
 func Get_DB_type() string {

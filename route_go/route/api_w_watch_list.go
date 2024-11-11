@@ -9,7 +9,7 @@ import (
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_w_watch_list(call_arg []string) string {
+func Api_w_watch_list(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
@@ -17,12 +17,9 @@ func Api_w_watch_list(call_arg []string) string {
 
     page, _ := strconv.Atoi(other_set["num"])
     num := 0
-    if page*50 > 0 {
-        num = page*50 - 50
+    if page * 50 > 0 {
+        num = page * 50 - 50
     }
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     return_data := make(map[string]interface{})
     return_data["language"] = map[string]string{

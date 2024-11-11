@@ -1,6 +1,7 @@
 package route
 
 import (
+    "database/sql"
     "log"
     "opennamu/route/tool"
     "strings"
@@ -8,14 +9,11 @@ import (
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_bbs_w(call_arg []string) string {
+func Api_bbs_w(db *sql.DB, call_arg []string) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
-
-    db := tool.DB_connect()
-    defer db.Close()
 
     stmt, err := db.Prepare(tool.DB_change("select set_name, set_data from bbs_data where set_id = ? and set_code = ?"))
     if err != nil {
