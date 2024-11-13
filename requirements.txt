@@ -6,6 +6,7 @@ waitress
 
 aiohttp
 asyncio
+requests
 
 diff-match-patch
 

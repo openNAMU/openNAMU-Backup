@@ -255,6 +255,21 @@ with class_temp_db() as m_conn:
             print('Wait golang...')
             time.sleep(1)
 
+def monitor_process():
+    global golang_process
+
+    while 1:
+        if golang_process.poll() is not None:
+            print('Golang restart')
+            
+            golang_process = subprocess.Popen(cmd)
+
+        time.sleep(1)
+
+monitor_thread = threading.Thread(target = monitor_process)
+monitor_thread.daemon = True
+monitor_thread.start()
+
 ###
 
 def back_up(data_db_set):
