@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strings"
 
@@ -17,7 +16,7 @@ func Api_bbs_w(db *sql.DB, call_arg []string) string {
 
     stmt, err := db.Prepare(tool.DB_change("select set_name, set_data from bbs_data where set_id = ? and set_code = ?"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
@@ -34,7 +33,7 @@ func Api_bbs_w(db *sql.DB, call_arg []string) string {
 
     rows, err := stmt.Query(bbs_num, post_num)
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     data_list := map[string]string{}
@@ -45,7 +44,7 @@ func Api_bbs_w(db *sql.DB, call_arg []string) string {
 
         err := rows.Scan(&set_name, &set_data)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         if set_name == "user_id" {

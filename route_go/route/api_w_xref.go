@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -28,7 +27,7 @@ func Api_w_xref(db *sql.DB, call_arg []string) string {
         if err == sql.ErrNoRows {
             link_case_insensitive = ""
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     }
 
@@ -44,13 +43,13 @@ func Api_w_xref(db *sql.DB, call_arg []string) string {
     }
 
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
     rows, err := stmt.Query(other_set["name"], num)
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer rows.Close()
 
@@ -62,7 +61,7 @@ func Api_w_xref(db *sql.DB, call_arg []string) string {
 
         err := rows.Scan(&name, &type_data)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         data_list = append(data_list, []string{name, type_data})

@@ -2,7 +2,6 @@ package tool
 
 import (
     "database/sql"
-    "log"
     "strconv"
     "strings"
     "time"
@@ -40,13 +39,13 @@ func List_acl(func_type string) []string {
 func List_auth(db *sql.DB) []string {
     stmt, err := db.Prepare(DB_change("select distinct name from alist"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
     rows, err := stmt.Query()
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer rows.Close()
 
@@ -57,7 +56,7 @@ func List_auth(db *sql.DB) []string {
 
         err := rows.Scan(&name)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         data_list = append(data_list, name)
@@ -74,14 +73,14 @@ func Do_insert_auth_history(db *sql.DB, ip string, what string) {
         if err == sql.ErrNoRows {
             log_off = ""
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     }
 
     if log_off == "" {
         stmt, err := db.Prepare(DB_change("insert into re_admin (who, what, time) values (?, ?, ?)"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -89,7 +88,7 @@ func Do_insert_auth_history(db *sql.DB, ip string, what string) {
 
         _, err = stmt.Exec(ip, what, time)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     }
 }
@@ -97,7 +96,7 @@ func Do_insert_auth_history(db *sql.DB, ip string, what string) {
 func Get_user_auth(db *sql.DB, ip string) string {
     stmt, err := db.Prepare(DB_change("select data from user_set where id = ? and name = 'acl'"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
@@ -112,7 +111,7 @@ func Get_user_auth(db *sql.DB, ip string) string {
                 auth = "ip"
             }
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     }
 
@@ -122,13 +121,13 @@ func Get_user_auth(db *sql.DB, ip string) string {
 func Get_auth_group_info(db *sql.DB, auth string) map[string]bool {
     stmt, err := db.Prepare(DB_change("select acl from alist where name = ?"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
     rows, err := stmt.Query(auth)
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer rows.Close()
 
@@ -139,7 +138,7 @@ func Get_auth_group_info(db *sql.DB, auth string) map[string]bool {
 
         err := rows.Scan(&name)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         data_list[name] = true
@@ -316,7 +315,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
             stmt, err := db.Prepare(DB_change("select data from acl where title = ? and type = 'decu'"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
@@ -327,7 +326,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                 if err == sql.ErrNoRows {
                     acl_data = ""
                 } else {
-                    log.Fatal(err)
+                    panic(err)
                 }
             }
 
@@ -363,7 +362,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
         if name == "" {
             stmt, err := db.Prepare(DB_change("select title from rd where code = ?"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
@@ -372,7 +371,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                 if err == sql.ErrNoRows {
                     name = "test"
                 } else {
-                    log.Fatal(err)
+                    panic(err)
                 }
             }
         }
@@ -421,7 +420,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select data from acl where title = ? and type = 'decu'"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -430,7 +429,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else {
@@ -448,7 +447,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select data from acl where title = ? and type = 'document_move_acl'"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -457,7 +456,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else {
@@ -475,7 +474,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select data from acl where title = ? and type = 'document_edit_acl'"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -484,7 +483,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else {
@@ -502,7 +501,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select data from acl where title = ? and type = 'document_delete_acl'"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -511,7 +510,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else {
@@ -529,7 +528,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select acl from rd where code = ?"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -538,7 +537,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else if for_a == 1 {
@@ -546,7 +545,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select data from acl where title = ? and type = 'dis'"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -555,7 +554,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else {
@@ -598,7 +597,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                 if topic_number != "" {
                     stmt, err := db.Prepare(DB_change("select acl from vote where id = ? and user = ''"))
                     if err != nil {
-                        log.Fatal(err)
+                        panic(err)
                     }
                     defer stmt.Close()
 
@@ -607,7 +606,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                         if err == sql.ErrNoRows {
                             acl_data = ""
                         } else {
-                            log.Fatal(err)
+                            panic(err)
                         }
                     }
                 } else {
@@ -644,7 +643,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select set_data from bbs_set where set_name = 'bbs_edit_acl' and set_id = ?"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -653,7 +652,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else if for_a == 1 {
@@ -661,7 +660,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select set_data from bbs_set where set_name = 'bbs_acl' and set_id = ?"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -670,7 +669,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else if for_a == 2 {
@@ -681,7 +680,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else {
@@ -699,7 +698,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select set_data from bbs_set where set_name = 'bbs_comment_acl' and set_id = ?"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -708,7 +707,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else if for_a == 1 {
@@ -716,7 +715,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select set_data from bbs_set where set_name = 'bbs_acl' and set_id = ?"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -725,7 +724,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else if for_a == 2 {
@@ -736,7 +735,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else {
@@ -754,7 +753,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select set_data from bbs_set where set_name = 'bbs_view_acl' and set_id = ?"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -763,7 +762,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else {
@@ -845,7 +844,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select data from acl where title = ? and type = 'document_edit_request_acl'"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -854,7 +853,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else {
@@ -881,7 +880,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
 
                 stmt, err := db.Prepare(DB_change("select data from acl where title = ? and type = 'view'"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -890,7 +889,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         acl_data = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
             } else {
@@ -936,7 +935,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                 if !ip_or_user {
                     stmt, err := db.Prepare(DB_change("select count(*) from history where ip = ?"))
                     if err != nil {
-                        log.Fatal(err)
+                        panic(err)
                     }
                     defer stmt.Close()
 
@@ -947,7 +946,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                         if err == sql.ErrNoRows {
                             count = 0
                         } else {
-                            log.Fatal(err)
+                            panic(err)
                         }
                     }
 
@@ -958,7 +957,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
             } else if acl_data == "before" {
                 stmt, err := db.Prepare(DB_change("select ip from history where title = ? and ip = ? and type != 'edit_request'"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -969,7 +968,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         exist = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
 
@@ -980,7 +979,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                 if !ip_or_user {
                     stmt, err := db.Prepare(DB_change("select data from user_set where id = ? and name = 'date'"))
                     if err != nil {
-                        log.Fatal(err)
+                        panic(err)
                     }
                     defer stmt.Close()
 
@@ -991,7 +990,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                         if err == sql.ErrNoRows {
                             signup_date = Get_time()
                         } else {
-                            log.Fatal(err)
+                            panic(err)
                         }
                     }
 
@@ -1011,7 +1010,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                 if !ip_or_user {
                     stmt, err := db.Prepare(DB_change("select data from user_set where id = ? and name = 'email'"))
                     if err != nil {
-                        log.Fatal(err)
+                        panic(err)
                     }
                     defer stmt.Close()
 
@@ -1022,7 +1021,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                         if err == sql.ErrNoRows {
                             exist = ""
                         } else {
-                            log.Fatal(err)
+                            panic(err)
                         }
                     }
 
@@ -1054,7 +1053,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                 if !ip_or_user {
                     stmt, err := db.Prepare(DB_change("select data from user_set where id = ? and name = 'date'"))
                     if err != nil {
-                        log.Fatal(err)
+                        panic(err)
                     }
                     defer stmt.Close()
 
@@ -1065,7 +1064,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                         if err == sql.ErrNoRows {
                             signup_date = Get_time()
                         } else {
-                            log.Fatal(err)
+                            panic(err)
                         }
                     }
 
@@ -1076,7 +1075,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if time_2.After(time_1) {
                         stmt, err := db.Prepare(DB_change("select count(*) from history where ip = ?"))
                         if err != nil {
-                            log.Fatal(err)
+                            panic(err)
                         }
                         defer stmt.Close()
 
@@ -1087,7 +1086,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                             if err == sql.ErrNoRows {
                                 count = 0
                             } else {
-                                log.Fatal(err)
+                                panic(err)
                             }
                         }
 
@@ -1109,7 +1108,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
             if tool == "topic" {
                 stmt, err := db.Prepare(DB_change("select title from rd where code = ? and stop != ''"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
@@ -1120,7 +1119,7 @@ func Check_acl(db *sql.DB, name string, topic_number string, tool string, ip str
                     if err == sql.ErrNoRows {
                         topic_state = ""
                     } else {
-                        log.Fatal(err)
+                        panic(err)
                     }
                 }
 

@@ -1,8 +1,7 @@
 package route
 
 import (
-    "log"
-    "database/sql"
+       "database/sql"
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
@@ -24,19 +23,19 @@ func Api_setting_put(db *sql.DB, call_arg []string) string {
             if _, ok := other_set["coverage"]; !ok {
                 stmt, err := db.Prepare(tool.DB_change("delete from other where name = ?"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
                 _, err = stmt.Exec(other_set["set_name"])
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
             }
 
             stmt, err := db.Prepare(tool.DB_change("insert into other (name, data, coverage) values (?, ?, ?)"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
@@ -47,7 +46,7 @@ func Api_setting_put(db *sql.DB, call_arg []string) string {
 
             _, err = stmt.Exec(other_set["set_name"], other_set["data"], data_coverage)
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
 
             return_data["response"] = "ok"

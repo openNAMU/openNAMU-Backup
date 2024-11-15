@@ -21,7 +21,7 @@ func Get_language(db *sql.DB, data string, safe bool) string {
         if err == sql.ErrNoRows {
             language = "ko-KR"
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     }
 
@@ -29,7 +29,7 @@ func Get_language(db *sql.DB, data string, safe bool) string {
 
     stmt, err := m_db.Prepare("select data from temp where name = ?")
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
@@ -38,7 +38,7 @@ func Get_language(db *sql.DB, data string, safe bool) string {
         if err == sql.ErrNoRows {
             language_data = ""
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     }
 
@@ -51,7 +51,7 @@ func Get_language(db *sql.DB, data string, safe bool) string {
     } else {
         file, err := os.Open("./lang/" + language + ".json")
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer file.Close()
 
@@ -59,7 +59,7 @@ func Get_language(db *sql.DB, data string, safe bool) string {
 
         decoder := json.NewDecoder(file)
         if err := decoder.Decode(&lang_data); err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         if _, ok := lang_data[data]; ok {

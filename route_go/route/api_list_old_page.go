@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -17,7 +16,7 @@ func Api_list_old_page(db *sql.DB, call_arg []string) string {
 
     page_int, err := strconv.Atoi(other_set["num"])
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     if page_int > 0 {
@@ -35,13 +34,13 @@ func Api_list_old_page(db *sql.DB, call_arg []string) string {
     }
 
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
     rows, err := stmt.Query(page_int)
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer rows.Close()
 
@@ -53,12 +52,12 @@ func Api_list_old_page(db *sql.DB, call_arg []string) string {
 
         err := rows.Scan(&doc_name, &date)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         stmt, err = db.Prepare(tool.DB_change("select set_data from data_set where doc_name = ? and set_name = 'doc_type'"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 

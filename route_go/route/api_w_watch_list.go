@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -39,13 +38,13 @@ func Api_w_watch_list(db *sql.DB, call_arg []string) string {
             stmt, err = db.Prepare(tool.DB_change("select id from user_set where name = 'watchlist' and data = ? limit ?, 50"))
         }
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
         rows, err := stmt.Query(other_set["name"], num)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer rows.Close()
 
@@ -57,7 +56,7 @@ func Api_w_watch_list(db *sql.DB, call_arg []string) string {
 
             err := rows.Scan(&user_name)
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
 
             var ip_pre string

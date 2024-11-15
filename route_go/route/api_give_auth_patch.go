@@ -1,8 +1,7 @@
 package route
 
 import (
-    "log"
-    "database/sql"
+       "database/sql"
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
@@ -55,24 +54,24 @@ func Api_give_auth_patch(db *sql.DB, call_arg []string) string {
             } else {
                 stmt, err := db.Prepare(tool.DB_change("delete from user_set where id = ? and name = 'acl'"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
                 _, err = stmt.Exec(user_name)
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
 
                 stmt, err = db.Prepare(tool.DB_change("insert into user_set (id, name, data) values (?, 'acl', ?)"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
                 _, err = stmt.Exec(user_name, other_set["change_auth"])
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
 
                 new_data["response"] = "ok"
@@ -113,13 +112,13 @@ func Api_give_auth_patch(db *sql.DB, call_arg []string) string {
             } else {
                 stmt, err := db.Prepare(tool.DB_change("update user_set set data = ? where name = 'acl' and data = ?"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
                 _, err = stmt.Exec(other_set["change_auth"], other_set["auth"])
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
 
                 new_data["response"] = "ok"

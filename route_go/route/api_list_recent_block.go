@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -17,7 +16,7 @@ func Api_list_recent_block(db *sql.DB, call_arg []string) string {
 
     page_int, err := strconv.Atoi(other_set["num"])
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     if page_int > 0 {
@@ -37,7 +36,7 @@ func Api_list_recent_block(db *sql.DB, call_arg []string) string {
         }
 
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         if other_set["why"] != "" {
@@ -47,67 +46,67 @@ func Api_list_recent_block(db *sql.DB, call_arg []string) string {
         }
 
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     } else if other_set["set_type"] == "ongoing" {
         stmt, err = db.Prepare(tool.DB_change("select why, block, blocker, end, today, band, ongoing from rb where ongoing = '1' and band != 'private' order by end desc limit ?, 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         rows, err = stmt.Query(page_int)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     } else if other_set["set_type"] == "regex" {
         stmt, err = db.Prepare(tool.DB_change("select why, block, blocker, end, today, band, ongoing from rb where band = 'regex' order by today desc limit ?, 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         rows, err = stmt.Query(page_int)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     } else if other_set["set_type"] == "private" {
         stmt, err = db.Prepare(tool.DB_change("select why, block, blocker, end, today, band, ongoing from rb where band = 'private' order by today desc limit ?, 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         rows, err = stmt.Query(page_int)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     } else if other_set["set_type"] == "user" {
         stmt, err = db.Prepare(tool.DB_change("select why, block, blocker, end, today, band, ongoing from rb where block = ? and band != 'private' order by today desc limit ?, 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         rows, err = stmt.Query(other_set["user_name"], page_int)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     } else if other_set["set_type"] == "cidr" {
         stmt, err = db.Prepare(tool.DB_change("select why, block, blocker, end, today, band, ongoing from rb where band = 'cidr' order by today desc limit ?, 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         rows, err = stmt.Query(page_int)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     } else {
         stmt, err = db.Prepare(tool.DB_change("select why, block, blocker, end, today, band, ongoing from rb where blocker = ? and band != 'private' order by today desc limit ?, 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         rows, err = stmt.Query(other_set["user_name"], page_int)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     }
 
@@ -128,7 +127,7 @@ func Api_list_recent_block(db *sql.DB, call_arg []string) string {
 
         err := rows.Scan(&why, &block, &blocker, &end, &today, &band, &ongoing)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         var ip_pre_blocker string

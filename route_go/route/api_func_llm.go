@@ -3,7 +3,6 @@ package route
 import (
     "context"
     "database/sql"
-    "log"
     "opennamu/route/tool"
 
     "github.com/google/generative-ai-go/genai"
@@ -21,7 +20,7 @@ func Api_func_llm(db *sql.DB, call_arg []string) string {
 
     stmt, err := db.Prepare(tool.DB_change("select data from user_set where name = 'llm_api_key' and id = ?"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
@@ -30,7 +29,7 @@ func Api_func_llm(db *sql.DB, call_arg []string) string {
         if err == sql.ErrNoRows {
             api_key = ""
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     }
 
@@ -38,14 +37,14 @@ func Api_func_llm(db *sql.DB, call_arg []string) string {
 
     client, err := genai.NewClient(ctx, option.WithAPIKey(api_key))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer client.Close()
 
     model := client.GenerativeModel("gemini-pro")
     resp, err := model.GenerateContent(ctx, genai.Text(other_set["prompt"]))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     text := resp.Candidates[0].Content.Parts[0]

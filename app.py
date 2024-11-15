@@ -236,39 +236,26 @@ else:
 if run_mode != '':
     cmd += [run_mode]
 
+def golang_process_check():
+    with class_temp_db() as m_conn:
+        m_curs = m_conn.cursor()
+        
+        m_curs.execute('select data from temp where name = "setup_golang_port"')
+        db_data = m_curs.fetchall()
+        db_data = db_data[0][0] if db_data else "3001"
+        
+        while True:
+            try:
+                response = requests.post('http://localhost:' + db_data + '/', data = "test {}")
+                if response.status_code == 200:
+                    print('Golang turn on')
+                    break
+            except requests.ConnectionError:
+                print('Wait golang...')
+                time.sleep(1)
+
 golang_process = subprocess.Popen(cmd)
-
-with class_temp_db() as m_conn:
-    m_curs = m_conn.cursor()
-    
-    m_curs.execute('select data from temp where name = "setup_golang_port"')
-    db_data = m_curs.fetchall()
-    db_data = db_data[0][0] if db_data else "3001"
-    
-    while True:
-        try:
-            response = requests.post('http://localhost:' + db_data + '/', data = "test {}")
-            if response.status_code == 200:
-                print('Golang turn on')
-                break
-        except requests.ConnectionError:
-            print('Wait golang...')
-            time.sleep(1)
-
-def monitor_process():
-    global golang_process
-
-    while 1:
-        if golang_process.poll() is not None:
-            print('Golang restart')
-            
-            golang_process = subprocess.Popen(cmd)
-
-        time.sleep(1)
-
-monitor_thread = threading.Thread(target = monitor_process)
-monitor_thread.daemon = True
-monitor_thread.start()
+golang_process_check()
 
 ###
 

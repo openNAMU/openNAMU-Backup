@@ -2,17 +2,39 @@ package main
 
 import (
     "os"
+    "fmt"
     "log"
     "io/ioutil"
     "strings"
-    "sync"
-    "runtime"
     "opennamu/route"
     "opennamu/route/tool"
     
     "net/http"
     "github.com/gin-gonic/gin"
 )
+
+func error_handler() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        defer func() {
+            if r := recover(); r != nil {
+                err, ok := r.(error)
+                if !ok {
+                    err = fmt.Errorf("%v", r)
+                }
+
+                if strings.Contains(err.Error(), "database is locked") {
+                    c.String(http.StatusInternalServerError, "database is locked")
+                } else {
+                    c.String(http.StatusInternalServerError, "error")
+                }
+
+                c.Abort()
+            }
+        }()
+
+        c.Next()
+    }
+}
 
 func main() {
     log.SetFlags(log.LstdFlags | log.Lshortfile)
@@ -24,30 +46,20 @@ func main() {
 
     tool.DB_init()
 
-    db_type := tool.Get_DB_type()
-    if db_type == "sqlite" {
-        runtime.GOMAXPROCS(1)
-    }
-
-    var mu sync.Mutex
-    
     r := gin.Default()
+    r.Use(error_handler())
+
     r.POST("/", func(c *gin.Context) {
         route_data := ""
         body, err := ioutil.ReadAll(c.Request.Body)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         
         body_string := string(body)
         word := strings.Fields(body_string)
         
         call_arg := []string{ word[0], strings.Join(word[1:], " ") }
-
-        if db_type == "sqlite" {
-            mu.Lock()
-            defer mu.Unlock()
-        }
 
         db := tool.DB_connect()
         defer tool.DB_close(db)

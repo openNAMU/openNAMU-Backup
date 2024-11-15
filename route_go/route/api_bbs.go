@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -21,7 +20,7 @@ func Api_bbs(db *sql.DB, call_arg []string) string {
 
         row, err := db.Query(tool.DB_change("select set_code, set_id, '0' from bbs_data where set_name = 'date' order by set_data desc limit 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         rows = append(rows, row)
@@ -34,26 +33,26 @@ func Api_bbs(db *sql.DB, call_arg []string) string {
 
         stmt, err := db.Prepare(tool.DB_change("select set_code, set_id, '1' from bbs_data where set_name = 'pinned' and set_id like ? order by set_data desc"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
         row, err := stmt.Query(other_set["bbs_num"])
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         rows = append(rows, row)
 
         stmt, err = db.Prepare(tool.DB_change("select set_code, set_id, '0' from bbs_data where set_name = 'title' and set_id like ? order by set_code + 0 desc limit ?, 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
         row, err = stmt.Query(other_set["bbs_num"], num)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         rows = append(rows, row)
@@ -74,7 +73,7 @@ func Api_bbs(db *sql.DB, call_arg []string) string {
 
             err := rows[for_a].Scan(&set_code, &set_id, &pinned)
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
 
             temp_data["set_code"] = set_code
@@ -83,13 +82,13 @@ func Api_bbs(db *sql.DB, call_arg []string) string {
 
             stmt, err := db.Prepare(tool.DB_change("select set_name, set_data, set_code, set_id from bbs_data where set_code = ? and set_id = ?"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
             rows, err := stmt.Query(set_code, set_id)
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer rows.Close()
 
@@ -99,7 +98,7 @@ func Api_bbs(db *sql.DB, call_arg []string) string {
 
                 err := rows.Scan(&set_name, &set_data, &set_code, &set_id)
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
 
                 if set_name == "user_id" {

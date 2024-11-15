@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -17,7 +16,7 @@ func Api_topic_list(db *sql.DB, call_arg []string) string {
 
     page_int, err := strconv.Atoi(other_set["num"])
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     if page_int > 0 {
@@ -28,13 +27,13 @@ func Api_topic_list(db *sql.DB, call_arg []string) string {
 
     stmt, err := db.Prepare(tool.DB_change("select code, sub, stop, agree, date from rd where title = ? order by sub asc limit ?, 50"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
     rows, err := stmt.Query(other_set["name"], page_int)
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer rows.Close()
 
@@ -50,12 +49,12 @@ func Api_topic_list(db *sql.DB, call_arg []string) string {
 
         err := rows.Scan(&code, &sub, &stop, &agree, &date)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         stmt, err := db.Prepare(tool.DB_change("select ip, id from topic where code = ? order by id + 0 desc limit 1"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -67,7 +66,7 @@ func Api_topic_list(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 ip = ""
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 

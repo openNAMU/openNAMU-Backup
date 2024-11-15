@@ -3,7 +3,6 @@ package route
 import (
     "database/sql"
     "encoding/json"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -47,7 +46,7 @@ func Api_bbs_w_comment(db *sql.DB, call_arg []string) string {
     if other_set["tool"] == "length" {
         stmt, err := db.Prepare(tool.DB_change("select count(*) from bbs_data where set_name = 'comment_date' and set_id = ? order by set_code + 0 desc"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -59,13 +58,13 @@ func Api_bbs_w_comment(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 comment_length = "0"
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 
         stmt, err = db.Prepare(tool.DB_change("select count(*) from bbs_data where set_name = 'comment_date' and set_id like ? order by set_code + 0 desc"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -76,7 +75,7 @@ func Api_bbs_w_comment(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 reply_length = "0"
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 

@@ -2,7 +2,6 @@ package tool
 
 import (
     "database/sql"
-    "log"
     "regexp"
     "strconv"
     "strings"
@@ -27,7 +26,7 @@ func Get_level(db *sql.DB, ip string) []string {
 
     stmt, err := db.Prepare(DB_change("select data from user_set where id = ? and name = 'level'"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
@@ -36,13 +35,13 @@ func Get_level(db *sql.DB, ip string) []string {
         if err == sql.ErrNoRows {
             level = "0"
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     }
 
     stmt, err = db.Prepare(DB_change("select data from user_set where id = ? and name = 'experience'"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
@@ -51,7 +50,7 @@ func Get_level(db *sql.DB, ip string) []string {
         if err == sql.ErrNoRows {
             exp = "0"
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     }
 
@@ -75,7 +74,7 @@ func IP_preprocess(db *sql.DB, ip string, my_ip string) []string {
         if err == sql.ErrNoRows {
             ip_view = ""
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     }
 
@@ -84,7 +83,7 @@ func IP_preprocess(db *sql.DB, ip string, my_ip string) []string {
         if err == sql.ErrNoRows {
             user_name_view = ""
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     }
 
@@ -106,7 +105,7 @@ func IP_preprocess(db *sql.DB, ip string, my_ip string) []string {
 
             stmt, err := db.Prepare(DB_change("select data from user_set where id = ? and name = 'sub_user_name'"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
@@ -115,7 +114,7 @@ func IP_preprocess(db *sql.DB, ip string, my_ip string) []string {
                 if err == sql.ErrNoRows {
                     sub_user_name = Get_language(db, "member", false)
                 } else {
-                    log.Fatal(err)
+                    panic(err)
                 }
             }
 
@@ -130,7 +129,7 @@ func IP_preprocess(db *sql.DB, ip string, my_ip string) []string {
 
             stmt, err := db.Prepare(DB_change("select data from user_set where name = 'user_name' and id = ?"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
@@ -139,7 +138,7 @@ func IP_preprocess(db *sql.DB, ip string, my_ip string) []string {
                 if err == sql.ErrNoRows {
                     user_name = ip
                 } else {
-                    log.Fatal(err)
+                    panic(err)
                 }
             }
 
@@ -160,7 +159,7 @@ func IP_menu(db *sql.DB, ip string, my_ip string, option string) map[string][][]
     if ip == my_ip && option == "" {
         stmt, err := db.Prepare(DB_change("select count(*) from user_notice where name = ? and readme = ''"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -171,7 +170,7 @@ func IP_menu(db *sql.DB, ip string, my_ip string, option string) map[string][][]
             if err == sql.ErrNoRows {
                 alarm_count = "0"
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 
@@ -238,7 +237,7 @@ func Get_user_ban_type(ban_type string) string {
 func Get_user_ban(db *sql.DB, ip string, tool string) []string {
     rows, err := db.Query(DB_change("select login, block from rb where band = 'regex' and ongoing = '1'"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer rows.Close()
 
@@ -248,7 +247,7 @@ func Get_user_ban(db *sql.DB, ip string, tool string) []string {
 
         err := rows.Scan(&login, &block)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         ban_type := Get_user_ban_type(login)
@@ -276,7 +275,7 @@ func Get_user_ban(db *sql.DB, ip string, tool string) []string {
     if IP_or_user(ip) {
         rows, err = db.Query(DB_change("select login, block from rb where band = 'cidr' and ongoing = '1'"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer rows.Close()
 
@@ -286,7 +285,7 @@ func Get_user_ban(db *sql.DB, ip string, tool string) []string {
 
             err := rows.Scan(&login, &block)
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
 
             ban_type := Get_user_ban_type(login)
@@ -316,7 +315,7 @@ func Get_user_ban(db *sql.DB, ip string, tool string) []string {
 
     stmt, err := db.Prepare(DB_change("select login from rb where block = ? and (band = '' or band = 'private') and ongoing = '1'"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
@@ -327,7 +326,7 @@ func Get_user_ban(db *sql.DB, ip string, tool string) []string {
         if err == sql.ErrNoRows {
 
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     } else {
         ban_type := Get_user_ban_type(login)
@@ -351,7 +350,7 @@ func Get_user_ban(db *sql.DB, ip string, tool string) []string {
 
     stmt, err = db.Prepare(DB_change("select data from user_set where id = ? and name = 'acl'"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
@@ -362,7 +361,7 @@ func Get_user_ban(db *sql.DB, ip string, tool string) []string {
         if err == sql.ErrNoRows {
 
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     } else {
         if data == "ban" {
@@ -394,7 +393,7 @@ func IP_parser(db *sql.DB, ip string, my_ip string) string {
                 if err == sql.ErrNoRows {
                     user_name_level = ""
                 } else {
-                    log.Fatal(err)
+                    panic(err)
                 }
             }
 
@@ -407,7 +406,7 @@ func IP_parser(db *sql.DB, ip string, my_ip string) string {
 
             stmt, err := db.Prepare(DB_change("select data from user_set where name = 'user_title' and id = ?"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
@@ -416,7 +415,7 @@ func IP_parser(db *sql.DB, ip string, my_ip string) string {
                 if err == sql.ErrNoRows {
                     user_title = ""
                 } else {
-                    log.Fatal(err)
+                    panic(err)
                 }
             }
 

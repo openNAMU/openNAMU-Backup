@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
@@ -43,13 +42,13 @@ func Api_bbs_w_set(db *sql.DB, call_arg []string) string {
 
         stmt, err := db.Prepare(tool.DB_change("select set_data, set_code from bbs_set where set_name = ? and set_id = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
         rows, err := stmt.Query(other_set["set_name"], other_set["set_id"])
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer rows.Close()
 
@@ -61,7 +60,7 @@ func Api_bbs_w_set(db *sql.DB, call_arg []string) string {
 
             err := rows.Scan(&set_data, &set_coverage)
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
 
             data_list = append(data_list, []string{set_data, set_coverage})

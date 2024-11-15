@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -20,7 +19,7 @@ func Api_w_page_view(db *sql.DB, call_arg []string) string {
         // 전체 조회수
         stmt, err := db.Prepare(tool.DB_change("select set_data from data_set where doc_name = ? and set_name = 'view_count' and doc_rev = ''"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -31,40 +30,40 @@ func Api_w_page_view(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 view_count = "0"
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 
         if view_count == "0" {
             stmt, err := db.Prepare(tool.DB_change("insert into data_set (doc_name, doc_rev, set_name, set_data) values (?, '', 'view_count', '1')"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
             _, err = stmt.Exec(other_set["doc_name"])
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
         } else {
             view_count_int, _ := strconv.Atoi(view_count)
 
             stmt, err := db.Prepare(tool.DB_change("update data_set set set_data = ? where doc_name = ? and set_name = 'view_count' and doc_rev = ''"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
             _, err = stmt.Exec(view_count_int+1, other_set["doc_name"])
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
         }
 
         // 월간 조회수
         stmt, err = db.Prepare(tool.DB_change("select set_data from data_set where doc_name = ? and set_name = 'view_count' and doc_rev = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -75,40 +74,40 @@ func Api_w_page_view(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 view_count = "0"
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 
         if view_count == "0" {
             stmt, err := db.Prepare(tool.DB_change("insert into data_set (doc_name, doc_rev, set_name, set_data) values (?, ?, 'view_count', '1')"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
             _, err = stmt.Exec(other_set["doc_name"], now_date)
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
         } else {
             view_count_int, _ := strconv.Atoi(view_count)
 
             stmt, err := db.Prepare(tool.DB_change("update data_set set set_data = ? where doc_name = ? and set_name = 'view_count' and doc_rev = ?"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
             _, err = stmt.Exec(view_count_int+1, other_set["doc_name"], now_date)
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
         }
 
         // 하루 조회수
         stmt, err = db.Prepare(tool.DB_change("select set_data from data_set where doc_name = ? and set_name = 'view_count' and doc_rev = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -119,33 +118,33 @@ func Api_w_page_view(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 view_count = "0"
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 
         if view_count == "0" {
             stmt, err := db.Prepare(tool.DB_change("insert into data_set (doc_name, doc_rev, set_name, set_data) values (?, ?, 'view_count', '1')"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
             _, err = stmt.Exec(other_set["doc_name"], now_date)
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
         } else {
             view_count_int, _ := strconv.Atoi(view_count)
 
             stmt, err := db.Prepare(tool.DB_change("update data_set set set_data = ? where doc_name = ? and set_name = 'view_count' and doc_rev = ?"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
             _, err = stmt.Exec(view_count_int+1, other_set["doc_name"], now_date)
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
         }
     }

@@ -2,8 +2,7 @@ package route
 
 import (
     "database/sql"
-    "log"
-
+   
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
@@ -18,7 +17,7 @@ func Api_topic(db *sql.DB, call_arg []string) string {
     if other_set["tool"] == "length" {
         stmt, err := db.Prepare(tool.DB_change("select id from topic where code = ? order by id + 0 desc limit 1"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -28,7 +27,7 @@ func Api_topic(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 length = "0"
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 
@@ -43,36 +42,36 @@ func Api_topic(db *sql.DB, call_arg []string) string {
         if other_set["tool"] == "top" {
             stmt, err := db.Prepare(tool.DB_change("select id, data, date, ip, block, top from topic where code = ? and top = 'O' order by id + 0 asc"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
             rows, err = stmt.Query(other_set["topic_num"])
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
         } else {
             if other_set["s_num"] != "" && other_set["e_num"] != "" {
                 stmt, err := db.Prepare(tool.DB_change("select id, data, date, ip, block, top from topic where code = ? and ? + 0 <= id + 0 and id + 0 <= ? + 0 order by id + 0 asc"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
                 rows, err = stmt.Query(other_set["topic_num"], other_set["s_num"], other_set["e_num"])
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
             } else {
                 stmt, err := db.Prepare(tool.DB_change("select id, data, date, ip, block, top from topic where code = ? order by id + 0 asc"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
                 rows, err = stmt.Query(other_set["topic_num"])
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
             }
         }
@@ -86,7 +85,7 @@ func Api_topic(db *sql.DB, call_arg []string) string {
 
             err := rows.Scan(&id, &data, &date, &ip, &block, &top)
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
 
             data_list = append(data_list, []string{id, data, date, ip, block, top})

@@ -3,7 +3,6 @@ package tool
 import (
     "bytes"
     "database/sql"
-    "log"
     "net/url"
     "regexp"
     "strconv"
@@ -114,7 +113,7 @@ func Markdown(db *sql.DB, data map[string]string) map[string]interface{} {
 
             stmt, err := db.Prepare(DB_change("select title from data where title = ?"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
@@ -123,7 +122,7 @@ func Markdown(db *sql.DB, data map[string]string) map[string]interface{} {
                 if err == sql.ErrNoRows {
                     exist = ""
                 } else {
-                    log.Fatal(err)
+                    panic(err)
                 }
             }
 

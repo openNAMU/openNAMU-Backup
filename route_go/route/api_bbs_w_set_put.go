@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
@@ -24,25 +23,25 @@ func Api_bbs_w_set_put(db *sql.DB, call_arg []string) string {
             if _, ok := other_set["coverage"]; !ok {
                 stmt, err := db.Prepare(tool.DB_change("delete from bbs_set where set_name = ? and set_id = ?"))
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
                 defer stmt.Close()
 
                 _, err = stmt.Exec(other_set["set_name"], other_set["set_id"])
                 if err != nil {
-                    log.Fatal(err)
+                    panic(err)
                 }
             }
 
             stmt, err := db.Prepare(tool.DB_change("insert into bbs_set (set_name, set_code, set_id, set_data) values (?, '', ?, ?)"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
             _, err = stmt.Exec(other_set["set_name"], other_set["set_id"], other_set["data"])
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
 
             return_data["response"] = "ok"

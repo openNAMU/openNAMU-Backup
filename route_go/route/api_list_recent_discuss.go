@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -17,7 +16,7 @@ func Api_list_recent_discuss(db *sql.DB, call_arg []string) string {
 
     limit_int, err := strconv.Atoi(other_set["limit"])
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     if limit_int > 50 || limit_int < 0 {
@@ -26,7 +25,7 @@ func Api_list_recent_discuss(db *sql.DB, call_arg []string) string {
 
     page_int, err := strconv.Atoi(other_set["num"])
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     if page_int > 0 {
@@ -47,13 +46,13 @@ func Api_list_recent_discuss(db *sql.DB, call_arg []string) string {
     }
 
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
     rows, err := stmt.Query(page_int, limit_int)
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer rows.Close()
 
@@ -70,12 +69,12 @@ func Api_list_recent_discuss(db *sql.DB, call_arg []string) string {
 
         err := rows.Scan(&title, &sub, &date, &code, &stop, &agree)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         stmt, err := db.Prepare(tool.DB_change("select ip, id from topic where code = ? order by id + 0 desc limit 1"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -87,7 +86,7 @@ func Api_list_recent_discuss(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 ip = ""
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 

@@ -2,8 +2,7 @@ package route
 
 import (
     "database/sql"
-    "log"
-
+   
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
@@ -19,7 +18,7 @@ func Api_w_random(db *sql.DB, call_arg []string) string {
         if err == sql.ErrNoRows {
             title = ""
         } else {
-            log.Fatal(err)
+            panic(err)
         }
     }
 

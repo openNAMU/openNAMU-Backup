@@ -1,8 +1,7 @@
 package route
 
 import (
-    "log"
-    "database/sql"
+       "database/sql"
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
@@ -20,24 +19,24 @@ func Api_w_set_reset(db *sql.DB, call_arg []string) string {
     if tool.Check_acl(db, "", "", "owner_auth", ip) {
         stmt, err := db.Prepare(tool.DB_change("delete from acl where title = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
         _, err = stmt.Exec(doc_name)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         stmt, err = db.Prepare(tool.DB_change("delete from data_set where doc_name = ? and set_name = 'acl_date'"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
         _, err = stmt.Exec(doc_name)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         set_list := []string{
@@ -49,13 +48,13 @@ func Api_w_set_reset(db *sql.DB, call_arg []string) string {
         for for_a := 0; for_a < len(set_list); for_a++ {
             stmt, err = db.Prepare(tool.DB_change("delete from data_set where doc_name = ? and set_name = ?"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
             _, err = stmt.Exec(doc_name, set_list[for_a])
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
         }
 

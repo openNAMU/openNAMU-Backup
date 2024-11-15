@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -25,7 +24,7 @@ func Api_bbs_w_post(db *sql.DB, call_arg []string) string {
     
     stmt, err := db.Prepare(tool.DB_change("select set_code from bbs_data where set_name = 'title' and set_id = ? order by set_code + 0 desc"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
@@ -33,7 +32,7 @@ func Api_bbs_w_post(db *sql.DB, call_arg []string) string {
 
     err = stmt.QueryRow(other_set["set_id"]).Scan(&set_code)
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     set_code_int, _ := strconv.Atoi(set_code)
@@ -52,13 +51,13 @@ func Api_bbs_w_post(db *sql.DB, call_arg []string) string {
     for _, v := range insert_db {
         stmt, err := db.Prepare(tool.DB_change("insert into bbs_data (set_name, set_code, set_id, set_data) values (?, ?, ?, ?)"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
         _, err = stmt.Exec(v[0], set_code_str, other_set["set_id"], v[1])
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     }
 

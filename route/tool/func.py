@@ -127,19 +127,16 @@ def python_to_golang_sync(func_name, other_set = {}):
         db_data = m_curs.fetchall()
         db_data = db_data[0][0] if db_data else "3001"
     
-        max_attempts = 100
-        attempt = 0
-        while attempt < max_attempts:
-            try:
-                res = requests.post('http://localhost:' + db_data + '/', data = other_set)
-                data = res.text
+        while 1:
+            res = requests.post('http://localhost:' + db_data + '/', data = other_set)
+            data = res.text
+
+            if "database is locked" == data:
+                pass
+            elif "error" == data:
+                raise
+            else:
                 return data
-            except:
-                attempt += 1
-                time.sleep(0.1)
-        else:
-            print('Golang part error')
-            raise
 
 async def python_to_golang(func_name, other_set = {}):
     with class_temp_db() as m_conn:
@@ -155,19 +152,16 @@ async def python_to_golang(func_name, other_set = {}):
         db_data = db_data[0][0] if db_data else "3001"
     
         async with aiohttp.ClientSession() as session:
-            max_attempts = 100
-            attempt = 0
-            while attempt < max_attempts:
-                try:
-                    async with session.post('http://localhost:' + db_data + '/', data = other_set) as res:
-                        data = await res.text()
+            while 1:
+                async with session.post('http://localhost:' + db_data + '/', data = other_set) as res:
+                    data = await res.text()
+
+                    if "database is locked" == data:
+                        pass
+                    elif "error" == data:
+                        raise
+                    else:
                         return data
-                except:
-                    attempt += 1
-                    time.sleep(0.1)
-            else:
-                print('Golang part error')
-                raise
 
 # Func-init
 def get_init_set_list(need = 'all'):

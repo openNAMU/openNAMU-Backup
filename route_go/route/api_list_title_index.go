@@ -1,8 +1,7 @@
 package route
 
 import (
-    "log"
-    "database/sql"
+       "database/sql"
     "opennamu/route/tool"
     "strconv"
 
@@ -17,7 +16,7 @@ func Api_list_title_index(db *sql.DB, call_arg []string) string {
 
     page_int, err := strconv.Atoi(other_set["num"])
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     if page_int > 0 {
@@ -28,13 +27,13 @@ func Api_list_title_index(db *sql.DB, call_arg []string) string {
 
     stmt, err := db.Prepare(tool.DB_change("select title from data limit ?, 50"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
     rows, err := stmt.Query(page_int)
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer rows.Close()
 
@@ -45,7 +44,7 @@ func Api_list_title_index(db *sql.DB, call_arg []string) string {
 
         err := rows.Scan(&title)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         data_list = append(data_list, title)

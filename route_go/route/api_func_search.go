@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "strconv"
 
     "opennamu/route/tool"
@@ -27,12 +26,12 @@ func Api_func_search(db *sql.DB, call_arg []string) string {
     if other_set["search_type"] == "title" {
         stmt, err = db.Prepare(tool.DB_change("select title from data where title collate nocase like ? order by title limit ?, 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     } else {
         stmt, err = db.Prepare(tool.DB_change("select title from data where data collate nocase like ? order by title limit ?, 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     }
     defer stmt.Close()
@@ -41,7 +40,7 @@ func Api_func_search(db *sql.DB, call_arg []string) string {
 
     rows, err := stmt.Query("%"+other_set["name"]+"%", num)
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer rows.Close()
 
@@ -50,7 +49,7 @@ func Api_func_search(db *sql.DB, call_arg []string) string {
 
         err := rows.Scan(&title)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         title_list = append(title_list, title)

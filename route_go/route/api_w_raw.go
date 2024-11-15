@@ -2,8 +2,7 @@ package route
 
 import (
     "database/sql"
-    "log"
-
+   
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
@@ -22,7 +21,7 @@ func Api_w_raw(db *sql.DB, call_arg []string) string {
     } else if other_set["exist_check"] != "" {
         stmt, err := db.Prepare(tool.DB_change("select title from data where title = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -33,7 +32,7 @@ func Api_w_raw(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 new_data["exist"] = false
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         } else {
             new_data["exist"] = true
@@ -50,7 +49,7 @@ func Api_w_raw(db *sql.DB, call_arg []string) string {
         if other_set["rev"] != "" {
             stmt, err = db.Prepare(tool.DB_change("select data, hide from history where title = ? and id = ?"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
@@ -58,7 +57,7 @@ func Api_w_raw(db *sql.DB, call_arg []string) string {
         } else {
             stmt, err = db.Prepare(tool.DB_change("select data from data where title = ?"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
@@ -69,7 +68,7 @@ func Api_w_raw(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 new_data["response"] = "not exist"
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         } else {
             check_pass := false

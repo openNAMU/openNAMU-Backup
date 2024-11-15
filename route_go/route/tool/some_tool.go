@@ -5,7 +5,6 @@ import (
     "database/sql"
     "encoding/hex"
     "html/template"
-    "log"
     "net/url"
     "time"
     "html"
@@ -60,26 +59,26 @@ func Get_document_setting(db *sql.DB, doc_name string, set_name string, doc_rev 
     if doc_rev != "" {
         stmt, err := db.Prepare(DB_change("select set_data, doc_rev from data_set where doc_name = ? and doc_rev = ? and set_name = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         defer stmt.Close()
 
         rows, err = stmt.Query(doc_name, doc_rev, set_name)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     } else {
         stmt, err := db.Prepare(DB_change("select set_data, doc_rev from data_set where doc_name = ? and set_name = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         defer stmt.Close()
 
         rows, err = stmt.Query(doc_name, set_name)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     }
     defer rows.Close()
@@ -92,7 +91,7 @@ func Get_document_setting(db *sql.DB, doc_name string, set_name string, doc_rev 
 
         err := rows.Scan(&set_data, &doc_rev)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         data_list = append(data_list, []string{set_data, doc_rev})
@@ -107,26 +106,26 @@ func Get_setting(db *sql.DB, set_name string, data_coverage string) [][]string {
     if data_coverage != "" {
         stmt, err := db.Prepare(DB_change("select data, coverage from other where name = ? and coverage = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         defer stmt.Close()
 
         rows, err = stmt.Query(set_name, data_coverage)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     } else {
         stmt, err := db.Prepare(DB_change("select data, coverage from other where name = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         defer stmt.Close()
 
         rows, err = stmt.Query(set_name)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     }
     defer rows.Close()
@@ -139,7 +138,7 @@ func Get_setting(db *sql.DB, set_name string, data_coverage string) [][]string {
 
         err := rows.Scan(&set_data, &set_coverage)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         data_list = append(data_list, []string{set_data, set_coverage})

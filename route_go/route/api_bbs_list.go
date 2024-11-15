@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
@@ -11,7 +10,7 @@ import (
 func bbs_list(db *sql.DB) map[string]string {
     rows, err := db.Query(tool.DB_change("select set_data, set_id from bbs_set where set_name = 'bbs_name'"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer rows.Close()
 
@@ -23,7 +22,7 @@ func bbs_list(db *sql.DB) map[string]string {
 
         err := rows.Scan(&name, &id)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         data_list[name] = id
@@ -41,7 +40,7 @@ func Api_bbs_list(db *sql.DB, call_arg []string) string {
     for k, v := range data_list {
         stmt, err := db.Prepare(tool.DB_change("select set_data from bbs_set where set_name = 'bbs_type' and set_id = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -52,13 +51,13 @@ func Api_bbs_list(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 bbs_type = ""
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 
         stmt, err = db.Prepare(tool.DB_change("select set_data from bbs_data where set_id = ? and set_name = 'date' order by set_code + 0 desc limit 1"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -69,7 +68,7 @@ func Api_bbs_list(db *sql.DB, call_arg []string) string {
             if err == sql.ErrNoRows {
                 bbs_date = ""
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 

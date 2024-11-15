@@ -1,8 +1,7 @@
 package route
 
 import (
-    "log"
-    "database/sql"
+       "database/sql"
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
@@ -18,13 +17,13 @@ func Api_user_setting_editor_delete(db *sql.DB, call_arg []string) string {
     if !tool.IP_or_user(ip) {
         stmt, err := db.Prepare(tool.DB_change("delete from user_set where id = ? and name = 'user_editor_top' and data = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
         _, err = stmt.Exec(ip, other_set["data"])
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         return_data := make(map[string]interface{})

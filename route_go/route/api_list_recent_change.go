@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -22,7 +21,7 @@ func Api_list_recent_change(db *sql.DB, call_arg []string) string {
 
     limit_int, err := strconv.Atoi(other_set["limit"])
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     if limit_int > 50 || limit_int < 0 {
@@ -31,7 +30,7 @@ func Api_list_recent_change(db *sql.DB, call_arg []string) string {
 
     page_int, err := strconv.Atoi(other_set["num"])
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     if page_int > 0 {
@@ -42,13 +41,13 @@ func Api_list_recent_change(db *sql.DB, call_arg []string) string {
 
     stmt, err := db.Prepare(tool.DB_change("select id, title from rc where type = ? order by date desc limit ?, ?"))
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer stmt.Close()
 
     rows, err := stmt.Query(set_type, page_int, limit_int)
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
     defer rows.Close()
 
@@ -63,7 +62,7 @@ func Api_list_recent_change(db *sql.DB, call_arg []string) string {
 
         err := rows.Scan(&id, &title)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         var date string
@@ -75,7 +74,7 @@ func Api_list_recent_change(db *sql.DB, call_arg []string) string {
 
         stmt, err := db.Prepare(tool.DB_change("select date, ip, send, leng, hide, type from history where id = ? and title = ?"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
@@ -89,7 +88,7 @@ func Api_list_recent_change(db *sql.DB, call_arg []string) string {
                 hide = ""
                 type_data = ""
             } else {
-                log.Fatal(err)
+                panic(err)
             }
         }
 

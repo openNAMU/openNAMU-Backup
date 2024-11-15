@@ -2,7 +2,6 @@ package route
 
 import (
     "database/sql"
-    "log"
     "opennamu/route/tool"
     "strconv"
 
@@ -17,7 +16,7 @@ func Api_list_history(db *sql.DB, call_arg []string) string {
 
     page_int, err := strconv.Atoi(other_set["num"])
     if err != nil {
-        log.Fatal(err)
+        panic(err)
     }
 
     if page_int > 0 {
@@ -35,24 +34,24 @@ func Api_list_history(db *sql.DB, call_arg []string) string {
     if other_set["set_type"] == "normal" {
         stmt, err := db.Prepare(tool.DB_change("select id, title, date, ip, send, leng, hide, type from history where title = ? order by id + 0 desc limit ?, 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
         rows, err = stmt.Query(other_set["doc_name"], page_int)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     } else {
         stmt, err := db.Prepare(tool.DB_change("select id, title, date, ip, send, leng, hide, type from history where title = ? and type = ? order by id + 0 desc limit ?, 50"))
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
         defer stmt.Close()
 
         rows, err = stmt.Query(other_set["doc_name"], other_set["set_type"], page_int)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
     }
     defer rows.Close()
@@ -74,7 +73,7 @@ func Api_list_history(db *sql.DB, call_arg []string) string {
 
         err := rows.Scan(&id, &title, &date, &ip, &send, &leng, &hide, &type_data)
         if err != nil {
-            log.Fatal(err)
+            panic(err)
         }
 
         var ip_pre string

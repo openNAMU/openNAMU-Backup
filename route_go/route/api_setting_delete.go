@@ -1,8 +1,7 @@
 package route
 
 import (
-    "log"
-    "database/sql"
+       "database/sql"
     "opennamu/route/tool"
 
     jsoniter "github.com/json-iterator/go"
@@ -23,13 +22,13 @@ func Api_setting_delete(db *sql.DB, call_arg []string) string {
         if auth_info {
             stmt, err := db.Prepare(tool.DB_change("delete from other where name = ?"))
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
             defer stmt.Close()
 
             _, err = stmt.Exec(other_set["set_name"])
             if err != nil {
-                log.Fatal(err)
+                panic(err)
             }
         } else {
             return_data["response"] = "require auth"
