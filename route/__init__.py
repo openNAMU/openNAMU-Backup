@@ -205,6 +205,7 @@ from route.go_api_bbs import api_bbs
 from route.go_api_bbs_list import api_bbs_list
 from route.go_api_bbs_w import api_bbs_w
 from route.go_api_bbs_w_set import api_bbs_w_set
+from route.go_api_bbs_w_tabom import api_bbs_w_tabom
 from route.go_api_bbs_w_comment import api_bbs_w_comment
 from route.go_api_bbs_w_comment_one import api_bbs_w_comment_one
 

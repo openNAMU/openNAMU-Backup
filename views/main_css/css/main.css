@@ -471,3 +471,23 @@
 .opennamu_main .opennamu_svg_tool {
     background-image: url(/views/main_css/file/icon/tool.svg);
 }
+
+.opennamu_main .opennamu_svg_tabom {
+    background-image: url(/views/main_css/file/icon/thumbs-up.svg);
+}
+
+#opennamu_bbs_w_post_tabom {
+    text-align: center;
+}
+
+.opennamu_main .opennamu_bbs_w_post_tabom {
+    width: 75px;
+    height: 75px;
+
+    padding: 15px;
+    
+    border: 2px solid gray;
+
+    background-size: 100% 100%;
+    background-origin: content-box;
+}

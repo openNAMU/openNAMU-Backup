@@ -3,6 +3,7 @@ package tool
 import (
     "database/sql"
     "strings"
+    "log"
 
     _ "github.com/go-sql-driver/mysql"
     _ "modernc.org/sqlite"
@@ -50,6 +51,15 @@ func DB_connect() *sql.DB {
         if err != nil {
             panic(err)
         }
+
+        var journal_mode string
+
+        err = db.QueryRow("PRAGMA journal_mode").Scan(&journal_mode)
+        if err != nil {
+            panic(err)
+        }
+
+        log.Default().Println(journal_mode)
 
         return db
     } else {

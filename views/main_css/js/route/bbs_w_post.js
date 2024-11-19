@@ -15,6 +15,26 @@ function opennamu_return_comment() {
     }
 }
 
+function opennamu_post_tabom() {
+    fetch('/api/v2/bbs/w/tabom/' + bbs_id + '-' + bbs_code, {
+        method : 'POST'
+    }).then(function(res) {
+        opennamu_load_tabom_count();
+    });
+}
+
+function opennamu_load_tabom_count() {
+    fetch('/api/v2/bbs/w/tabom/' + bbs_id + '-' + bbs_code).then(function(res) {
+        return res.json();
+    }).then(function(data) {
+        if(data) {
+            for(let for_a = 0; for_a < document.getElementsByClassName('opennamu_tabom_count').length; for_a++) {
+                document.getElementsByClassName('opennamu_tabom_count').innerHTML = data["data"];
+            }
+        }
+    });
+}
+
 function opennamu_load_comment() {
     const url = window.location.pathname;
     const url_split = url.split('/');
@@ -80,6 +100,16 @@ function opennamu_load_comment() {
 
             if(document.getElementById('opennamu_bbs_w_post_select')) {
                 document.getElementById('opennamu_bbs_w_post_select').innerHTML = select;
+            }
+
+            if(document.getElementById('opennamu_bbs_w_post_tabom')) {
+                document.getElementById('opennamu_bbs_w_post_tabom').innerHTML = '' +
+                    '<a href="javascript:void(0);">' +
+                        '<span class="opennamu_bbs_w_post_tabom opennamu_svg opennamu_svg_tabom">&nbsp;</span>' +
+                    '</a>' +
+                    '<hr class="main_hr">' +
+                    '<span>' + lang["upvote"] + '</span>' +
+                '';
             }
 
             document.getElementById('opennamu_bbs_w_post').innerHTML = data_html;

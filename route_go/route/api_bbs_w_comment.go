@@ -9,7 +9,7 @@ import (
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_bbs_w_comment_all(db *sql.DB, sub_code string) []map[string]string {
+func Api_bbs_w_comment_all(db *sql.DB, sub_code string, already_auth_check bool) []map[string]string {
     end_data := []map[string]string{}
 
     inter_other_set := map[string]string{}
@@ -18,7 +18,7 @@ func Api_bbs_w_comment_all(db *sql.DB, sub_code string) []map[string]string {
     inter_other_set["legacy"] = "on"
 
     json_data, _ := json.Marshal(inter_other_set)
-    return_data := Api_bbs_w_comment_one(db, []string{string(json_data)})
+    return_data := Api_bbs_w_comment_one(db, []string{string(json_data)}, already_auth_check)
 
     return_data_api := []map[string]string{}
     json.Unmarshal([]byte(return_data), &return_data_api)
@@ -26,7 +26,7 @@ func Api_bbs_w_comment_all(db *sql.DB, sub_code string) []map[string]string {
     for for_a := 0; for_a < len(return_data_api); for_a++ {
         end_data = append(end_data, return_data_api[for_a])
 
-        temp := Api_bbs_w_comment_all(db, sub_code + "-" + return_data_api[for_a]["code"])
+        temp := Api_bbs_w_comment_all(db, sub_code + "-" + return_data_api[for_a]["code"], already_auth_check)
         if len(temp) > 0 {
             for for_b := 0; for_b < len(temp); for_b++ {
                 end_data = append(end_data, temp[for_b])
@@ -94,13 +94,19 @@ func Api_bbs_w_comment(db *sql.DB, call_arg []string) string {
         json_data, _ := json.Marshal(data_list)
         return string(json_data)
     } else {
-        temp := Api_bbs_w_comment_all(db, other_set["sub_code"])
+        return_data := make(map[string]interface{})
+        
+        temp := []map[string]string{}
+        if tool.Check_acl(db, "", "", "bbs_comment", other_set["ip"]) {
+            return_data["response"] = "require auth"
+        } else {
+            temp = Api_bbs_w_comment_all(db, other_set["sub_code"], true)
+        }
 
         if other_set["legacy"] != "" {
             json_data, _ := json.Marshal(temp)
             return string(json_data)
         } else {
-            return_data := make(map[string]interface{})
             return_data["language"] = map[string]string{
                 "normal":  tool.Get_language(db, "normal", false),
                 "comment": tool.Get_language(db, "comment", false),

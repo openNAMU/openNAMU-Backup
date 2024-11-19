@@ -24,7 +24,7 @@ func error_handler() gin.HandlerFunc {
                 }
 
                 if strings.Contains(err.Error(), "database is locked") {
-                    c.String(http.StatusInternalServerError, "database is locked")
+                    c.String(http.StatusTooManyRequests, "database is locked")
                 } else {
                     log.Printf("Recovered from panic: %v\n", err)
                     c.String(http.StatusInternalServerError, "error")
@@ -149,7 +149,7 @@ func main() {
         } else if call_arg[0] == "api_w_page_view" {
             route_data = route.Api_w_page_view(db, call_arg[1:])
         } else if call_arg[0] == "api_bbs_w_comment_one" {
-            route_data = route.Api_bbs_w_comment_one(db, call_arg[1:])
+            route_data = route.Api_bbs_w_comment_one(db, call_arg[1:], false)
         } else if call_arg[0] == "api_bbs_w_comment" {
             route_data = route.Api_bbs_w_comment(db, call_arg[1:])
         } else if call_arg[0] == "api_list_history" {

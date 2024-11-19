@@ -8,7 +8,7 @@ import (
     jsoniter "github.com/json-iterator/go"
 )
 
-func Api_bbs_w_comment_one(db *sql.DB, call_arg []string) string {
+func Api_bbs_w_comment_one(db *sql.DB, call_arg []string, already_auth_check bool) string {
     var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
@@ -109,6 +109,14 @@ func Api_bbs_w_comment_one(db *sql.DB, call_arg []string) string {
         data_list = append(data_list, temp_dict)
     }
 
+    return_data := make(map[string]interface{})
+    if !already_auth_check {
+        if tool.Check_acl(db, "", "", "bbs_comment", other_set["ip"]) {
+            data_list = []map[string]string{}
+            return_data["response"] = "require auth"
+        }
+    }
+
     if other_set["legacy"] != "" {
         var json_data []byte
         if other_set["tool"] == "around" {
@@ -119,7 +127,6 @@ func Api_bbs_w_comment_one(db *sql.DB, call_arg []string) string {
 
         return string(json_data)
     } else {
-        return_data := make(map[string]interface{})
         return_data["data"] = data_list
 
         json_data, _ := json.Marshal(return_data)

@@ -55,6 +55,7 @@
     "not_use_view_count" : "Disable page view",
     "login_able_and_regsiter_disable" : "Login-able and Registration-disable",
     "private" : "Private",
+    "upvote" : "Upvote",
 
     "_comment_" : "Common",
     "data" : "Data",
