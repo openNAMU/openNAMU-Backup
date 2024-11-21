@@ -1,10 +1,10 @@
 package route
 
 import (
-    "database/sql"
-    "opennamu/route/tool"
-    
-    jsoniter "github.com/json-iterator/go"
+	"database/sql"
+	"opennamu/route/tool"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 func Api_bbs_w_post_tabom_post(db *sql.DB, call_arg []string) string {
@@ -22,5 +22,8 @@ func Api_bbs_w_post_tabom_post(db *sql.DB, call_arg []string) string {
         return string(json_data)
     }
 
-	return ""
+    return_data["response"] = "ok"
+
+    json_data, _ := json.Marshal(return_data)
+    return string(json_data)
 }
