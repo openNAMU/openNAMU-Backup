@@ -1,11 +1,11 @@
 package route
 
 import (
-    "database/sql"
-    "opennamu/route/tool"
-    "strconv"
+	"database/sql"
+	"opennamu/route/tool"
+	"strconv"
 
-    jsoniter "github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 )
 
 func Api_bbs_w_post(db *sql.DB, call_arg []string) string {
@@ -14,7 +14,7 @@ func Api_bbs_w_post(db *sql.DB, call_arg []string) string {
     other_set := map[string]string{}
     json.Unmarshal([]byte(call_arg[0]), &other_set)
 
-    if tool.Check_acl(db, "", "", "bbs_comment", other_set["ip"]) {
+    if !tool.Check_acl(db, "", "", "bbs_comment", other_set["ip"]) {
         return_data := make(map[string]interface{})
         return_data["response"] = "require auth"
 
@@ -43,10 +43,10 @@ func Api_bbs_w_post(db *sql.DB, call_arg []string) string {
     date_now := tool.Get_time()
 
     insert_db := [][]string{
-        []string{"title", other_set["title"]},
-        []string{"data", other_set["data"]},
-        []string{"date", date_now},
-        []string{"user_id", other_set["ip"]},
+        { "title", other_set["title"] },
+        { "data", other_set["data"] },
+        { "date", date_now },
+        { "user_id", other_set["ip"] },
     }
     for _, v := range insert_db {
         stmt, err := db.Prepare(tool.DB_change("insert into bbs_data (set_name, set_code, set_id, set_data) values (?, ?, ?, ?)"))

@@ -1,12 +1,12 @@
 package route
 
 import (
-    "database/sql"
-    "encoding/json"
-    "opennamu/route/tool"
-    "strconv"
+	"database/sql"
+	"encoding/json"
+	"opennamu/route/tool"
+	"strconv"
 
-    jsoniter "github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 )
 
 func Api_bbs_w_comment_all(db *sql.DB, sub_code string, already_auth_check bool) []map[string]string {
@@ -97,7 +97,7 @@ func Api_bbs_w_comment(db *sql.DB, call_arg []string) string {
         return_data := make(map[string]interface{})
         
         temp := []map[string]string{}
-        if tool.Check_acl(db, "", "", "bbs_comment", other_set["ip"]) {
+        if !tool.Check_acl(db, "", "", "bbs_comment", other_set["ip"]) {
             return_data["response"] = "require auth"
         } else {
             temp = Api_bbs_w_comment_all(db, other_set["sub_code"], true)
@@ -108,10 +108,10 @@ func Api_bbs_w_comment(db *sql.DB, call_arg []string) string {
             return string(json_data)
         } else {
             return_data["language"] = map[string]string{
-                "normal":  tool.Get_language(db, "normal", false),
-                "comment": tool.Get_language(db, "comment", false),
-                "tool":    tool.Get_language(db, "tool", false),
-                "return":  tool.Get_language(db, "return", false),
+                "normal" : tool.Get_language(db, "normal", false),
+                "comment" : tool.Get_language(db, "comment", false),
+                "tool" : tool.Get_language(db, "tool", false),
+                "return" : tool.Get_language(db, "return", false),
             }
             return_data["data"] = temp
 

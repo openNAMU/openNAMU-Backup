@@ -63,7 +63,7 @@ func Api_bbs_w(db *sql.DB, call_arg []string) string {
 
     return_data := make(map[string]interface{})
 
-    if tool.Check_acl(db, "", "", "bbs_view", other_set["ip"]) {
+    if !tool.Check_acl(db, "", "", "bbs_view", other_set["ip"]) {
         data_list = map[string]string{}
         return_data["response"] = "require auth"
     }

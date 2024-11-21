@@ -111,7 +111,7 @@ func Api_bbs_w_comment_one(db *sql.DB, call_arg []string, already_auth_check boo
 
     return_data := make(map[string]interface{})
     if !already_auth_check {
-        if tool.Check_acl(db, "", "", "bbs_comment", other_set["ip"]) {
+        if !tool.Check_acl(db, "", "", "bbs_comment", other_set["ip"]) {
             data_list = []map[string]string{}
             return_data["response"] = "require auth"
         }

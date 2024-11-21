@@ -31,7 +31,7 @@ func Api_bbs_w_set(db *sql.DB, call_arg []string) string {
 
     if val, ok := setting_acl[other_set["set_name"]]; ok {
         if val != "" {
-            if tool.Check_acl(db, "", "", "owner_auth", other_set["ip"]) {
+            if !tool.Check_acl(db, "", "", "owner_auth", other_set["ip"]) {
                 return_data := make(map[string]interface{})
                 return_data["response"] = "require auth"
 

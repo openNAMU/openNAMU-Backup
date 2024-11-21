@@ -15,7 +15,7 @@ func Api_bbs_w_post_tabom_post(db *sql.DB, call_arg []string) string {
 
     return_data := make(map[string]interface{})
 
-    if tool.Check_acl(db, "", "", "bbs_comment", other_set["ip"]) {
+    if !tool.Check_acl(db, "", "", "bbs_comment", other_set["ip"]) {
         return_data["response"] = "require auth"
 
         json_data, _ := json.Marshal(return_data)
