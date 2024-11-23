@@ -112,6 +112,7 @@ func Api_bbs_w_comment(db *sql.DB, call_arg []string) string {
                 "comment" : tool.Get_language(db, "comment", false),
                 "tool" : tool.Get_language(db, "tool", false),
                 "return" : tool.Get_language(db, "return", false),
+                "upvote" : tool.Get_language(db, "upvote", false),    
             }
             return_data["data"] = temp
 

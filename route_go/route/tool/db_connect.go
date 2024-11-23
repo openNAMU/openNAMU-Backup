@@ -1,12 +1,11 @@
 package tool
 
 import (
-    "database/sql"
-    "strings"
-    "log"
+	"database/sql"
+	"strings"
 
-    _ "github.com/go-sql-driver/mysql"
-    _ "modernc.org/sqlite"
+	_ "github.com/go-sql-driver/mysql"
+	_ "modernc.org/sqlite"
 )
 
 var db_set = map[string]string{}
@@ -59,7 +58,7 @@ func DB_connect() *sql.DB {
             panic(err)
         }
 
-        log.Default().Println(journal_mode)
+        // log.Default().Println(journal_mode)
 
         return db
     } else {

@@ -1,11 +1,11 @@
 package route
 
 import (
-    "database/sql"
-    "opennamu/route/tool"
-    "strings"
+	"database/sql"
+	"opennamu/route/tool"
+	"strings"
 
-    jsoniter "github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 )
 
 func Api_bbs_w(db *sql.DB, call_arg []string) string {
@@ -72,9 +72,7 @@ func Api_bbs_w(db *sql.DB, call_arg []string) string {
         json_data, _ := json.Marshal(data_list)
         return string(json_data)
     } else {
-        return_data["language"] = map[string]string{
-            "upvote" : tool.Get_language(db, "upvote", false),
-        }
+        return_data["language"] = map[string]string{}
         return_data["data"] = data_list
 
         json_data, _ := json.Marshal(return_data)

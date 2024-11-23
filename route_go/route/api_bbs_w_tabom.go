@@ -8,7 +8,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
-func Api_bbs_w_post_tabom(db *sql.DB, call_arg []string) string {
+func Api_bbs_w_tabom(db *sql.DB, call_arg []string) string {
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
     other_set := map[string]string{}
@@ -35,12 +35,17 @@ func Api_bbs_w_post_tabom(db *sql.DB, call_arg []string) string {
         if err != nil {
             panic(err)
         }
+        defer stmt.Close()
     
         var tabom_count string
     
-        err = stmt.QueryRow(bbs_num, post_num).Scan(tabom_count)
+        err = stmt.QueryRow(bbs_num, post_num).Scan(&tabom_count)
         if err != nil {
-            panic(err)
+            if err == sql.ErrNoRows {
+                tabom_count = "0"
+            } else {
+                panic(err)
+            }
         }
     
         return_data["response"] = "ok"

@@ -839,6 +839,7 @@ app.route('/api/v2/bbs/main')(api_bbs)
 app.route('/api/v2/bbs/set/<int:bbs_num>/<name>', methods = ['GET', 'PUT'])(api_bbs_w_set)
 app.route('/api/v2/bbs/in/<int:bbs_num>/<int:page>')(api_bbs)
 app.route('/api/v2/bbs/w/<sub_code>', defaults = { 'legacy' : '' })(api_bbs_w)
+app.route('/api/v2/bbs/w/tabom/<sub_code>', methods = ['GET', 'POST'])(api_bbs_w_tabom)
 app.route('/api/v2/bbs/w/comment/<sub_code>/<tool>', defaults = { 'legacy' : '' })(api_bbs_w_comment)
 app.route('/api/v2/bbs/w/comment_one/<sub_code>/<tool>', defaults = { 'legacy' : '' })(api_bbs_w_comment_one)
 

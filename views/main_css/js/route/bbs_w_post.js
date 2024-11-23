@@ -15,21 +15,23 @@ function opennamu_return_comment() {
     }
 }
 
-function opennamu_post_tabom() {
+function opennamu_post_tabom(bbs_id, bbs_code) {
     fetch('/api/v2/bbs/w/tabom/' + bbs_id + '-' + bbs_code, {
         method : 'POST'
     }).then(function(res) {
-        opennamu_load_tabom_count();
+        return res.json();
+    }).then(function(data) {
+        opennamu_load_tabom_count(bbs_id, bbs_code);
     });
 }
 
-function opennamu_load_tabom_count() {
+function opennamu_load_tabom_count(bbs_id, bbs_code) {
     fetch('/api/v2/bbs/w/tabom/' + bbs_id + '-' + bbs_code).then(function(res) {
         return res.json();
     }).then(function(data) {
         if(data) {
             for(let for_a = 0; for_a < document.getElementsByClassName('opennamu_tabom_count').length; for_a++) {
-                document.getElementsByClassName('opennamu_tabom_count').innerHTML = data["data"];
+                document.getElementsByClassName('opennamu_tabom_count')[for_a].innerHTML = data["data"];
             }
         }
     });
@@ -104,15 +106,21 @@ function opennamu_load_comment() {
 
             if(document.getElementById('opennamu_bbs_w_post_tabom')) {
                 document.getElementById('opennamu_bbs_w_post_tabom').innerHTML = '' +
-                    '<a href="javascript:void(0);">' +
+                    '<a href="javascript:void(0);" id="opennamu_tabom_button">' +
                         '<span class="opennamu_bbs_w_post_tabom opennamu_svg opennamu_svg_tabom">&nbsp;</span>' +
                     '</a>' +
                     '<hr class="main_hr">' +
-                    '<span>' + lang["upvote"] + '</span>' +
+                    '<span>' + lang["upvote"] + '</span> <span class="opennamu_tabom_count"></span>' +
                 '';
             }
 
             document.getElementById('opennamu_bbs_w_post').innerHTML = data_html;
+            
+            opennamu_load_tabom_count(bbs_id, bbs_code);
+
+            document.getElementById('opennamu_tabom_button').addEventListener("click", function() {
+                opennamu_post_tabom(bbs_id, bbs_code);
+            });
 
             for(let for_a = 0; for_a < end_render.length; for_a++) {
                 let observer = new IntersectionObserver(entries => {
