@@ -198,6 +198,7 @@ async def bbs_w_post(bbs_num = '', post_num = ''):
                 bbs_comment_form = ''
                 if bbs_comment_acl == 0:
                     bbs_comment_form += '''
+                        <div id="opennamu_bbs_w_post_tabom"></div>
                         <div id="opennamu_bbs_w_post_select"></div>
                         ''' + edit_editor(conn, ip, '', 'bbs_comment') + '''
                     '''

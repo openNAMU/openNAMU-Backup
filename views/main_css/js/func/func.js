@@ -125,58 +125,82 @@ function opennamu_do_id_check(data) {
 }
 
 function opennamu_do_ip_click(obj) {
-    if(obj.id === "") {
+    if (obj.id === "") {
         let user_name = obj.name;
 
-        fetch('/api/v2/ip_menu/' + user_name).then(function(res) {
-            return res.json();
-        }).then(function(data) {
-            data = data["data"];
-
-            let data_html = '';
-
-            for(let key in data) {
-                for(let for_a = 0; for_a < data[key].length; for_a++) {
-                    data_html += '<a href="' + data[key][for_a][0] + '">' + data[key][for_a][1] + '</a> | ';
+        fetch('/api/v2/ip_menu/' + user_name)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`API 호출 실패: ${response.status}`);
                 }
-            }
+                return response.json();
+            })
+            .then(data => {
+                data = data["data"];
 
-            data_html = data_html.replace(/ \| $/g, '');
+                let data_html = '';
+                for (let key in data) {
+                    for (let for_a = 0; for_a < data[key].length; for_a++) {
+                        data_html += '<a href="' + data[key][for_a][0] + '">' + data[key][for_a][1] + '</a> | ';
+                    }
+                }
 
-            let for_a;
-            for(for_a = 0; document.getElementById("opennamu_ip_render_" + String(for_a) + "_load"); for_a++) {}
+                data_html = data_html.replace(/ \| $/g, '');
 
-            let popup_html = '<span class="opennamu_popup_footnote" id="opennamu_ip_render_' + String(for_a) + '_load" style="display: none;"></span>';
-            popup_html += '<span style="display: none;" id="opennamu_ip_tool_' + String(for_a) + '">';
-            popup_html += data_html;
-            popup_html += '</span>';
+                let for_a;
+                for (for_a = 0; document.getElementById("opennamu_ip_render_" + String(for_a) + "_load"); for_a++) {}
 
-            obj.innerHTML += popup_html;
-            obj.id = 'opennamu_ip_render_' + String(for_a);
-            obj.onclick = '';
-    
-            document.getElementById('opennamu_ip_render_' + String(for_a)).addEventListener("click", function() { opennamu_do_footnote_popover('opennamu_ip_render_' + String(for_a), '', 'opennamu_ip_tool_' + String(for_a), 'open'); });
-            document.addEventListener("click", function() { opennamu_do_footnote_popover('opennamu_ip_render_' + String(for_a), '', 'opennamu_ip_tool_' + String(for_a), 'close'); });
-            
-            obj.click();
-        });
+                let popup_html = '<span class="opennamu_popup_footnote" id="opennamu_ip_render_' + String(for_a) + '_load" style="display: none;"></span>';
+                popup_html += '<span style="display: none;" id="opennamu_ip_tool_' + String(for_a) + '">';
+                popup_html += data_html;
+                popup_html += '</span>';
+
+                obj.innerHTML += popup_html;
+                obj.id = 'opennamu_ip_render_' + String(for_a);
+                obj.onclick = '';
+
+                document.getElementById('opennamu_ip_render_' + String(for_a)).addEventListener("click", function () {
+                    opennamu_do_footnote_popover('opennamu_ip_render_' + String(for_a), '', 'opennamu_ip_tool_' + String(for_a), 'open');
+                });
+                document.addEventListener("click", function () {
+                    opennamu_do_footnote_popover('opennamu_ip_render_' + String(for_a), '', 'opennamu_ip_tool_' + String(for_a), 'close');
+                });
+
+                obj.click();
+            })
+            .catch(err => {
+                console.error('IP 메뉴 호출 중 오류 발생:', err);
+                obj.innerHTML = 'IP 정보를 불러오는 데 실패했습니다.';
+            });
     }
 }
+
+
 
 function opennamu_do_ip_render() {
-    for(let for_a = 0; for_a < document.getElementsByClassName('opennamu_render_ip').length; for_a++) {
+    for (let for_a = 0; for_a < document.getElementsByClassName('opennamu_render_ip').length; for_a++) {
         let ip = document.getElementsByClassName('opennamu_render_ip')[for_a].innerHTML.replace(/&amp;/g, '&');
 
-        fetch('/api/v2/ip/' + opennamu_do_url_encode(ip)).then(function(res) {
-            return res.json();
-        }).then(function(data) {
-            if(document.getElementsByClassName('opennamu_render_ip')[for_a].id !== "opennamu_render_end") {
-                document.getElementsByClassName('opennamu_render_ip')[for_a].innerHTML = data["data"];
-                document.getElementsByClassName('opennamu_render_ip')[for_a].id = "opennamu_render_end";
-            }
-        });
+        fetch('/api/v2/ip/' + opennamu_do_url_encode(ip))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`API 호출 실패: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (document.getElementsByClassName('opennamu_render_ip')[for_a].id !== "opennamu_render_end") {
+                    document.getElementsByClassName('opennamu_render_ip')[for_a].innerHTML = data["data"];
+                    document.getElementsByClassName('opennamu_render_ip')[for_a].id = "opennamu_render_end";
+                }
+            })
+            .catch(err => {
+                console.error('IP 렌더링 호출 중 오류 발생:', err);
+                document.getElementsByClassName('opennamu_render_ip')[for_a].innerHTML = 'IP 정보를 불러오는 데 실패했습니다.';
+            });
     }
 }
+
 
 function opennamu_do_url_encode(data) {
     return encodeURIComponent(data);
@@ -220,37 +244,49 @@ function opennamu_do_trace_spread() {
 
 function opennamu_do_render(to_obj, data, name = '', do_type = '', option = '', callback = undefined) {
     let url;
-    if(do_type === '') {
+    if (do_type === '') {
         url = "/api/render";
     } else {
         url = "/api/render/" + do_type;
     }
 
     fetch(url, {
-        method : 'POST',
-        headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body : new URLSearchParams({
-            'name' : name,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            'name': name,
             'data': data,
-            'option' : option
+            'option': option
         })
-    }).then(function(res) {
-        return res.json();
-    }).then(function(text) {
-        if(document.getElementById(to_obj)) {
-            if(text["data"]) {
-                document.getElementById(to_obj).innerHTML = text["data"];
-                eval(text["js_data"]);
-            } else {
-                document.getElementById(to_obj).innerHTML = '';
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`API 호출 실패: ${response.status}`);
             }
+            return response.json();
+        })
+        .then(text => {
+            if (document.getElementById(to_obj)) {
+                if (text["data"]) {
+                    document.getElementById(to_obj).innerHTML = text["data"];
+                    eval(text["js_data"]);
+                } else {
+                    document.getElementById(to_obj).innerHTML = '';
+                }
 
-            if(callback) {
-                callback();
+                if (callback) {
+                    callback();
+                }
             }
-        }
-    });
+        })
+        .catch(err => {
+            console.error('렌더링 호출 중 오류 발생:', err);
+            if (document.getElementById(to_obj)) {
+                document.getElementById(to_obj).innerHTML = '렌더링에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+            }
+        });
 }
+
 
 function opennamu_page_control(url, page, data_length, data_length_max = 50) {
     let next = function() {
@@ -305,3 +341,6 @@ function opennamu_make_list(left = '', right = '', bottom = '', class_name = '')
 
     return data_html;
 }
+
+
+

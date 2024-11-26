@@ -23,8 +23,6 @@ function opennamu_bbs_w_set_post() {
             method : 'PUT',
             body : post_data,
         }).then(function(res) {
-            return res.json();
-        }).then(function(data) {
             history.go(0);
         });
     }

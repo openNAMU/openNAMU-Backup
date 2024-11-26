@@ -1,4 +1,4 @@
-FROM python:3.10.5-alpine
+FROM python:3.11.10-slim
 
 MAINTAINER 2du <min08101@naver.com>
 MAINTAINER hoparkgo9ma <me@ho9.me>

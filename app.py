@@ -25,7 +25,7 @@ data_db_set = class_check_json()
 do_db_set(data_db_set)
 
 with class_temp_db() as m_conn:
-    m_conn.execute('pragma journal_mode = WAL')
+    m_conn.execute('pragma journal_mode = DELETE')
 
 with get_db_connect(init_mode = True) as conn:
     curs = conn.cursor()
@@ -57,7 +57,7 @@ with get_db_connect(init_mode = True) as conn:
 
         conn.select_db(data_db_set['name'])
     else:
-        conn.execute('pragma journal_mode = WAL')
+        conn.execute('pragma journal_mode = DELETE')
 
     if setup_tool != 'normal':
         create_data = get_db_table_list()
@@ -839,6 +839,7 @@ app.route('/api/v2/bbs/main')(api_bbs)
 app.route('/api/v2/bbs/set/<int:bbs_num>/<name>', methods = ['GET', 'PUT'])(api_bbs_w_set)
 app.route('/api/v2/bbs/in/<int:bbs_num>/<int:page>')(api_bbs)
 app.route('/api/v2/bbs/w/<sub_code>', defaults = { 'legacy' : '' })(api_bbs_w)
+app.route('/api/v2/bbs/w/tabom/<sub_code>', methods = ['GET', 'POST'])(api_bbs_w_tabom)
 app.route('/api/v2/bbs/w/comment/<sub_code>/<tool>', defaults = { 'legacy' : '' })(api_bbs_w_comment)
 app.route('/api/v2/bbs/w/comment_one/<sub_code>/<tool>', defaults = { 'legacy' : '' })(api_bbs_w_comment_one)
 

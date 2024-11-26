@@ -17,7 +17,7 @@ func Api_bbs_w_comment_make(db *sql.DB, doc_name string) string {
     inter_other_set["data"] = ""
 
     json_data, _ := json.Marshal(inter_other_set)
-    return_data := Api_bbs_w_comment_one(db, []string{string(json_data)})
+    return_data := Api_bbs_w_comment_one(db, []string{string(json_data)}, false)
 
     return_data_api := map[string]string{}
     json.Unmarshal([]byte(return_data), &return_data_api)

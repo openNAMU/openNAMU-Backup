@@ -79,7 +79,10 @@ function opennamu_list_recent_discuss() {
 
         document.getElementById('opennamu_list_recent_discuss').innerHTML = data_html;
 
-        document.getElementById('opennamu_list_admin_tool_button').addEventListener("click", function() { opennamu_do_footnote_popover('opennamu_list_admin_tool_button', '', 'opennamu_list_admin_tool', 'open'); });
+        if(document.getElementById('opennamu_list_admin_tool_button')) {
+            document.getElementById('opennamu_list_admin_tool_button').addEventListener("click", function() { opennamu_do_footnote_popover('opennamu_list_admin_tool_button', '', 'opennamu_list_admin_tool', 'open'); });
+        }
+        
         document.addEventListener("click", function() { opennamu_do_footnote_popover('opennamu_list_admin_tool_button', '', 'opennamu_list_admin_tool', 'close'); });
     });
 }

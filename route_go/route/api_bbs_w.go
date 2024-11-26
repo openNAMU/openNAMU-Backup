@@ -1,11 +1,11 @@
 package route
 
 import (
-    "database/sql"
-    "opennamu/route/tool"
-    "strings"
+	"database/sql"
+	"opennamu/route/tool"
+	"strings"
 
-    jsoniter "github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 )
 
 func Api_bbs_w(db *sql.DB, call_arg []string) string {
@@ -61,11 +61,17 @@ func Api_bbs_w(db *sql.DB, call_arg []string) string {
         }
     }
 
+    return_data := make(map[string]interface{})
+
+    if !tool.Check_acl(db, "", "", "bbs_view", other_set["ip"]) {
+        data_list = map[string]string{}
+        return_data["response"] = "require auth"
+    }
+
     if other_set["legacy"] != "" {
         json_data, _ := json.Marshal(data_list)
         return string(json_data)
     } else {
-        return_data := make(map[string]interface{})
         return_data["language"] = map[string]string{}
         return_data["data"] = data_list
 
