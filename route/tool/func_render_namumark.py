@@ -199,26 +199,48 @@ class class_do_render_namumark:
             else:
                 return data[1]
 
-    def get_tool_link_fix(self, link_main, do_type = 'link'):
+    def get_tool_link_fix(self, link_main, do_type='link'):
         if do_type == 'link':
-            if link_main == '../':
+            if link_main.startswith('../'):
+                # ../하위문서 처리
+                levels_up = link_main.count('../')  # ../ 개수 계산
+                remaining_path = link_main.lstrip('../')  # ../ 제거 후 나머지 경로 추출
+
+                # 현재 문서 이름에서 상위 경로로 이동
                 link_main = self.doc_name
-                link_main = re.sub(r'(\/[^/]+)$', '', link_main)
+                for _ in range(levels_up):
+                    link_main = re.sub(r'(\/[^/]+)$', '', link_main)
+
+                # 상위 경로에 나머지 하위 문서 경로 추가
+                if remaining_path:
+                    link_main = f"{link_main}/{remaining_path}"
             elif re.search(r'^\/', link_main):
-                link_main = re.sub(r'^\/', lambda x : (self.doc_name + '/'), link_main)
-            elif re.search(r'^:(분류|category):', link_main, flags = re.I):
-                link_main = re.sub(r'^:(분류|category):', 'category:', link_main, flags = re.I)
-            elif re.search(r'^:(파일|file):', link_main, flags = re.I):
-                link_main = re.sub(r'^:(파일|file):', 'file:', link_main, flags = re.I)
-            elif re.search(r'^사용자:', link_main, flags = re.I):
-                link_main = re.sub(r'^사용자:', 'user:', link_main, flags = re.I)
+                # 절대 하위 문서 이동 처리
+                link_main = re.sub(r'^\/', lambda x: (self.doc_name + '/'), link_main)
+            elif re.search(r'^:(분류|category):', link_main, flags=re.I):
+                # 분류 문서 처리
+                link_main = re.sub(r'^:(분류|category):', 'category:', link_main, flags=re.I)
+            elif re.search(r'^:(파일|file):', link_main, flags=re.I):
+                # 파일 문서 처리
+                link_main = re.sub(r'^:(파일|file):', 'file:', link_main, flags=re.I)
+            elif re.search(r'^사용자:', link_main, flags=re.I):
+                # 사용자 문서 처리
+                link_main = re.sub(r'^사용자:', 'user:', link_main, flags=re.I)
         else:
-            # do_type == 'redirect'
-            if link_main == '../':
+            # 리다이렉트 처리 (do_type == 'redirect')
+            if link_main.startswith('../'):
+                # ../하위문서 처리 (리다이렉트 시)
+                levels_up = link_main.count('../')
+                remaining_path = link_main.lstrip('../')
+
                 link_main = self.doc_name
-                link_main = re.sub(r'(\/[^/]+)$', '', link_main)
+                for _ in range(levels_up):
+                    link_main = re.sub(r'(\/[^/]+)$', '', link_main)
+
+                if remaining_path:
+                    link_main = f"{link_main}/{remaining_path}"
             elif re.search(r'^\/', link_main):
-                link_main = re.sub(r'^\/', lambda x : (self.doc_name + '/'), link_main)
+                link_main = re.sub(r'^\/', lambda x: (self.doc_name + '/'), link_main)
             elif re.search(r'^분류:', link_main):
                 link_main = re.sub(r'^분류:', 'category:', link_main)
             elif re.search(r'^사용자:', link_main):
