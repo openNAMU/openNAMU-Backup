@@ -9,9 +9,9 @@ def api_version(version_list):
         up_data = up_data[0][0] if up_data and up_data[0][0] in ['stable', 'beta', 'dev'] else 'stable'
 
         json_data = {
-            "version" : version_list['beta']['r_ver'], 
-            "db_version" : version_list['beta']['c_ver'],
-            "skin_version" : version_list['beta']['s_ver'],
+            "version" : version_list['r_ver'], 
+            "db_version" : version_list['c_ver'],
+            "skin_version" : version_list['s_ver'],
             "build" : up_data
         }
 

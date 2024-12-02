@@ -36,15 +36,34 @@ with get_db_connect(init_mode = True) as conn:
     except:
         setup_tool = 'init'
 
-    if setup_tool != 'init':
+    if setup_tool != 'init' and run_mode != 'dev':
         ver_set_data = curs.fetchall()
         if ver_set_data:
-            if int(version_list['beta']['c_ver']) > int(ver_set_data[0][0]):
+            if int(version_list['c_ver']) > int(ver_set_data[0][0]):
                 setup_tool = 'update'
             else:
                 setup_tool = 'normal'
         else:
             setup_tool = 'init'
+
+    if setup_tool != 'normal':
+        file_name = linux_exe_chmod()
+        local_file_path = os.path.join("route_go", "bin", file_name)
+
+        if os.path.exists(local_file_path):
+            print('Remove Old Binary')
+            os.remove(local_file_path)
+
+        download_url = version_list["bin_link"] + file_name
+
+        print('Download New Binary File')
+        response = requests.get(download_url, stream = True)
+        if response.status_code == 200:
+            with open(local_file_path, 'wb') as file:
+                for chunk in response.iter_content(chunk_size = 8192):
+                    file.write(chunk)
+
+            print('Complete Download')
 
     if data_db_set['type'] == 'mysql':
         try:
@@ -133,7 +152,7 @@ with get_db_connect(init_mode = True) as conn:
         else:
             set_init(conn)
 
-    set_init_always(conn, version_list['beta']['c_ver'], run_mode)
+    set_init_always(conn, version_list['c_ver'], run_mode)
 
     # Init-Route
     class EverythingConverter(werkzeug.routing.PathConverter):

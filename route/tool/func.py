@@ -17,9 +17,9 @@ import email.header
 with open('version.json', encoding = 'utf8') as file_data:
     version_list = json.loads(file_data.read())
 
-print('Version : ' + version_list['beta']['r_ver'])
-print('DB set version : ' + version_list['beta']['c_ver'])
-print('Skin set version : ' + version_list['beta']['s_ver'])
+print('Version : ' + version_list['r_ver'])
+print('DB set version : ' + version_list['c_ver'])
+print('Skin set version : ' + version_list['s_ver'])
 
 # Init-PIP_Install
 data_up_date = 1
@@ -27,12 +27,12 @@ if os.path.exists(os.path.join('data', 'version.json')):
     with open(os.path.join('data', 'version.json'), encoding = 'utf8') as file_data:
         data_load_ver = file_data.read()
     
-    if data_load_ver == version_list['beta']['r_ver']:
+    if data_load_ver == version_list['r_ver']:
         data_up_date = 0
 
 if data_up_date == 1:
     with open(os.path.join('data', 'version.json'), 'w', encoding = 'utf8') as f:
-        f.write(version_list['beta']['r_ver'])
+        f.write(version_list['r_ver'])
     
     if platform.system() in ('Linux', 'Darwin', 'Windows'):
         python_ver = ''
@@ -792,11 +792,8 @@ def set_init_always(conn, ver_num, run_mode):
 
         # OS마다 실행 파일 설정
         exe_type = linux_exe_chmod()
-        if run_mode == '':
-            exe_path = os.path.join('.', 'route_go', 'bin')
-            for for_a in os.listdir(exe_path):
-                if for_a != exe_type:
-                    os.remove(os.path.join(exe_path, for_a))
+        if platform.system() == 'Linux' or platform.system() == 'Darwin':
+            os.system('chmod +x ./route_go/bin/' + exe_type)
 
 def linux_exe_chmod():
     exe_type = ''
@@ -812,9 +809,6 @@ def linux_exe_chmod():
             exe_type = 'main.amd64.exe'
         else:
             exe_type = 'main.arm64.exe'
-
-    if platform.system() == 'Linux' or platform.system() == 'Darwin':
-        os.system('chmod +x ./route_go/bin/' + exe_type)
 
     return exe_type
 
