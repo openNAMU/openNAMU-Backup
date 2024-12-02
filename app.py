@@ -36,7 +36,7 @@ with get_db_connect(init_mode = True) as conn:
     except:
         setup_tool = 'init'
 
-    if setup_tool != 'init' and run_mode != 'dev':
+    if setup_tool != 'init':
         ver_set_data = curs.fetchall()
         if ver_set_data:
             if int(version_list['c_ver']) > int(ver_set_data[0][0]):
@@ -46,7 +46,7 @@ with get_db_connect(init_mode = True) as conn:
         else:
             setup_tool = 'init'
 
-    if setup_tool != 'normal':
+    if setup_tool != 'normal' and run_mode != 'dev':
         file_name = linux_exe_chmod()
         local_file_path = os.path.join("route_go", "bin", file_name)
 
