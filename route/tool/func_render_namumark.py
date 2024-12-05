@@ -1748,6 +1748,9 @@ class class_do_render_namumark:
                     table_parameter_all['td'] += 'text-align: left;'
                     if re.search(r' $', data):
                         data = re.sub(r' $', '', data)
+            else:
+                data = re.sub(r'^ ', '', data)
+                data = re.sub(r' $', '', data)
 
             if table_colspan_auto == 1:
                 table_parameter_all['colspan'] = str(len(cell_count) // 2)
