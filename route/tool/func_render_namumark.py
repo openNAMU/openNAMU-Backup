@@ -199,7 +199,15 @@ class class_do_render_namumark:
             else:
                 return data[1]
 
-    def get_tool_link_fix(self, link_main, do_type='link'):
+    def get_tool_link_fix_sub(self, link_sub):
+        if re.search(r'^:(분류|category):', link_sub, flags = re.I):
+            link_sub = re.sub(r'^:(?P<in>분류|category):', '\g<in>:', link_sub, flags = re.I)
+        elif re.search(r'^:(파일|file):', link_sub, flags = re.I):
+            link_sub = re.sub(r'^:(?P<in>파일|file):', '\g<in>:', link_sub, flags = re.I)
+
+        return link_sub
+
+    def get_tool_link_fix(self, link_main, do_type = 'link'):
         if do_type == 'link':
             if link_main.startswith('../'):
                 # ../하위문서 처리
@@ -1286,7 +1294,7 @@ class class_do_render_namumark:
                         link_sub_storage = ''
                     else:
                         link_sub = ''
-                        link_sub_storage = link_main_org
+                        link_sub_storage = self.get_tool_link_fix_sub(link_main_org)
 
                     self.link_count += 1
 
