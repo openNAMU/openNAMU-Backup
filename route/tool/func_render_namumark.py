@@ -1807,7 +1807,7 @@ class class_do_render_namumark:
                     else:
                         if table_parameter['rowspan'][table_col_num] != 0:
                             table_parameter['rowspan'][table_col_num] -= 1
-                            table_col_num += 1
+                            table_col_num += int(table_sub_parameter['colspan'])
 
                     if table_sub_parameter['rowspan'] != '':
                         rowspan_int = int(table_sub_parameter['rowspan'])
@@ -1829,7 +1829,7 @@ class class_do_render_namumark:
                     
                         table_parameter["td"] += '<td colspan="' + table_sub_parameter['colspan'] + '" rowspan="' + table_sub_parameter['rowspan'] + '" style="' + table_parameter['col'][table_col_num] + table_sub_parameter['td'] + '"><back_br>\n' + table_sub_parameter['data'] + '\n<front_br></td>'
                     
-                    table_col_num += 1
+                    table_col_num += int(table_sub_parameter['colspan'])
                 else:
                     table_data_end += '<tr style="' + table_parameter["tr"] + '">' + table_parameter["td"] + '</tr>'
 
